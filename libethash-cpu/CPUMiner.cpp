@@ -122,6 +122,7 @@ static size_t getTotalPhysAvailableMemory()
  */
 unsigned CPUMiner::getNumDevices()
 {
+    return 1; // FIXME - hack to reduce resource usage while testing
 #if 0
     static unsigned cpus = 0;
 
@@ -231,7 +232,7 @@ bool CPUMiner::initDevice()
 
 
 /*
- * A new epoch was receifed with last work package (called from Miner::initEpoch())
+ * A new epoch was received with last work package (called from Miner::initEpoch())
  *
  * If we get here it means epoch has changed so it's not necessary
  * to check again dag sizes. They're changed for sure
@@ -247,7 +248,7 @@ bool CPUMiner::initEpoch_internal()
    Miner should stop working on the current block
    This happens if a
      * new work arrived                       or
-     * miner should stop (eg exit ethminer)   or
+     * miner should stop (eg exit olminer)   or
      * miner should pause
 */
 void CPUMiner::kick_miner()
@@ -282,7 +283,7 @@ void CPUMiner::search(const dev::eth::WorkPackage& w)
         if (r.solution_found)
         {
             h256 mix{reinterpret_cast<byte*>(r.mix_hash.bytes), h256::ConstructFromPointer};
-            auto sol = Solution{r.nonce, mix, w, std::chrono::steady_clock::now(), m_index};
+            auto sol = Solution{r.nonce, mix, w, std::chrono::steady_clock::now(), m_index, 0, 0};
 
             cpulog << EthWhite << "Job: " << w.header.abridged()
                    << " Sol: " << toHex(sol.nonce, HexPrefix::Add) << EthReset;

@@ -57,6 +57,7 @@ struct WorkPackage
 
     std::string job;  // Job identifier can be anything. Not necessarily a hash
 
+    std::vector<uint8_t> miner_key, timestamp;
     h256 boundary;
     h256 header;  ///< When h256() means "pause until notified a new work package is available".
     h256 seed;
@@ -67,7 +68,7 @@ struct WorkPackage
     uint64_t startNonce = 0;
     uint16_t exSizeBytes = 0;
 
-    std::string algo = "ethash";
+    std::string algo = "olhash";
 };
 
 struct Solution
@@ -77,6 +78,8 @@ struct Solution
     WorkPackage work;                              // WorkPackage this solution refers to
     std::chrono::steady_clock::time_point tstamp;  // Timestamp of found solution
     unsigned midx;                                 // Originating miner Id
+    uint64_t distance;                             // "edit distance" (not really a distance)
+    uint64_t difficulty;                           // diffculty at which block was solved (time dependent)
 };
 
 }  // namespace eth

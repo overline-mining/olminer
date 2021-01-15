@@ -24,14 +24,14 @@ set(PROJECT_VERSION 0.0.1)
 
 cable_set_build_type(DEFAULT Release CONFIGURATION_TYPES Release RelWithDebInfo)
 
-option(ETHASHCL "Build with OpenCL mining" OFF)
+option(ETHASHCL "Build with OpenCL mining" OFF) # NOT AVAILABLE YET DO NOT TURN ON
 option(ETHASHCUDA "Build with CUDA mining" OFF)
 option(ETHASHCPU "Build with CPU mining (only for development)" ON)
 option(ETHDBUS "Build with D-Bus support" OFF)
 option(APICORE "Build with API Server support" ON)
 option(BINKERN "Install AMD binary kernels" ON)
 option(DEVBUILD "Log developer metrics" OFF)
-option(USE_SYS_OPENCL "Build with system OpenCL" OFF)
+option(USE_SYS_OPENCL "Build with system OpenCL" OFF) # DO NOT TURN ON
 
 # propagates CMake configuration options to the compiler
 function(configureProject)
@@ -98,6 +98,7 @@ endif()
 
 cable_add_buildinfo_library(PROJECT_NAME ${PROJECT_NAME})
 
+add_subdirectory(libolhash)
 add_subdirectory(libdevcore)
 add_subdirectory(libethcore)
 add_subdirectory(libhwmon)
