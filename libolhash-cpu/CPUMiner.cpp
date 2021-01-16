@@ -323,7 +323,7 @@ void CPUMiner::workLoop()
             continue;
         }
 
-        if (w.algo == "ethash")
+        if (w.algo == "olhash")
         {
             // Epoch change ?
             if (current.epoch != w.epoch)

@@ -2,12 +2,16 @@ include(FindSSE2)
 
 if (NOT HAVE_SSE2)
   set(SOURCES
+    olhash.h
+    olhash.cpp
 	  blake2.h
     ref/blake2-impl.h
     ref/blake2b-ref.c
     )
 else ()
   set(SOURCES
+    olhash.h
+    olhash.cpp
     blake2.h
     sse/blake2-config.h
     sse/blake2-impl.h

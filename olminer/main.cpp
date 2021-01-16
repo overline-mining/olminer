@@ -31,8 +31,8 @@
 #if ETH_ETHASHCUDA
 #include <libethash-cuda/CUDAMiner.h>
 #endif
-#if ETH_ETHASHCPU
-#include <libethash-cpu/CPUMiner.h>
+#if OL_OLHASHCPU
+#include <libolhash-cpu/CPUMiner.h>
 #endif
 #include <libpoolprotocols/PoolManager.h>
 
@@ -232,7 +232,7 @@ public:
 #if ETH_ETHASHCUDA
                     "cu",
 #endif
-#if ETH_ETHASHCPU
+#if OL_OLHASHCPU
                     "cp",
 #endif
 #if API_CORE
@@ -307,7 +307,7 @@ public:
 
 #endif
 
-#if ETH_ETHASHCL || ETH_ETHASHCUDA || ETH_ETHASH_CPU
+#if ETH_ETHASHCL || ETH_ETHASHCUDA || OL_OLHASH_CPU
 
         app.add_flag("--list-devices", m_shouldListDevices, "");
 
@@ -346,7 +346,7 @@ public:
 
 #endif
 
-#if ETH_ETHASHCPU
+#if OL_OLHASHCPU
 
         app.add_option("--cpu-devices,--cp-devices", m_CPSettings.devices, "");
 
@@ -363,7 +363,7 @@ public:
         app.add_flag("-U,--cuda", cuda_miner, "");
 
         bool cpu_miner = false;
-#if ETH_ETHASHCPU
+#if OL_OLHASHCPU
         app.add_flag("--cpu", cpu_miner, "");
 #endif
         auto sim_opt = app.add_option("-Z,--simulation,-M,--benchmark", m_PoolSettings.benchmarkBlock, "", true);
@@ -515,7 +515,7 @@ public:
         if (m_minerType == MinerType::CUDA || m_minerType == MinerType::Mixed)
             CUDAMiner::enumDevices(m_DevicesCollection);
 #endif
-#if ETH_ETHASHCPU
+#if OL_OLHASHCPU
         if (m_minerType == MinerType::CPU)
             CPUMiner::enumDevices(m_DevicesCollection);
 #endif
@@ -676,7 +676,7 @@ public:
             }
         }
 #endif
-#if ETH_ETHASHCPU
+#if OL_OLHASHCPU
         if (m_CPSettings.devices.size() && (m_minerType == MinerType::CPU))
         {
             for (auto index : m_CPSettings.devices)
@@ -719,7 +719,7 @@ public:
             }
         }
 #endif
-#if ETH_ETHASHCPU
+#if OL_OLHASHCPU
         if (!m_CPSettings.devices.size() &&
             (m_minerType == MinerType::CPU))
         {
@@ -774,7 +774,7 @@ public:
 #if ETH_ETHASHCUDA
              << "    -U,--cuda           Mine/Benchmark using CUDA only" << endl
 #endif
-#if ETH_ETHASHCPU
+#if OL_OLHASHCPU
              << "    --cpu               Development ONLY ! (mutually exclusive with GPU)" << endl
 #endif
              << endl
@@ -799,7 +799,7 @@ public:
 #if ETH_ETHASHCUDA
              << "cu,"
 #endif
-#if ETH_ETHASHCPU
+#if OL_OLHASHCPU
              << "cp,"
 #endif
 #if API_CORE
@@ -815,7 +815,7 @@ public:
 #if ETH_ETHASHCUDA
              << "                        'cu'   Extended CUDA options" << endl
 #endif
-#if ETH_ETHASHCPU
+#if OL_OLHASHCPU
              << "                        'cp'   Extended CPU options" << endl
 #endif
 #if API_CORE

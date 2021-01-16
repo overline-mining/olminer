@@ -26,8 +26,8 @@
 #include <libethash-cuda/CUDAMiner.h>
 #endif
 
-#if ETH_ETHASHCPU
-#include <libethash-cpu/CPUMiner.h>
+#if OL_OLHASHCPU
+#include <libolhash-cpu/CPUMiner.h>
 #endif
 
 namespace dev
@@ -279,7 +279,7 @@ bool Farm::start()
                     new CLMiner(m_miners.size(), m_CLSettings, it->second)));
             }
 #endif
-#if ETH_ETHASHCPU
+#if OL_OLHASHCPU
 
             if (it->second.subscriptionType == DeviceSubscriptionTypeEnum::Cpu)
             {
