@@ -45,8 +45,8 @@ PoolManager::PoolManager(PoolSettings _settings)
         }
         else
         {
-            cnote << string(EthOrange "Solution 0x") + toHex(sol.nonce)
-                  << " wasted. Waiting for connection...";
+          cnote << string(EthOrange "Solution ") + std::to_string(sol.nonce) + string(" ") + std::to_string(sol.distance)
+                << " wasted. Waiting for connection...";
         }
 
         return false;
@@ -478,9 +478,9 @@ void PoolManager::showMiningAt()
     if (!m_currentWp)
         return;
 
-    double d = dev::getHashesToTarget(m_currentWp.boundary.hex(HexPrefix::Add));
+    double d = m_currentWp.difficulty; //dev::getHashesToTarget(m_currentWp.boundary.hex(HexPrefix::Add));
     cnote << "Epoch : " EthWhite << m_currentWp.epoch << EthReset << " Difficulty : " EthWhite
-          << dev::getFormattedHashes(d) << EthReset;
+          << d << EthReset;
 }
 
 void PoolManager::failovertimer_elapsed(const boost::system::error_code& ec)
@@ -543,7 +543,7 @@ double PoolManager::getCurrentDifficulty()
     if (!m_currentWp)
         return 0.0;
 
-    return dev::getHashesToTarget(m_currentWp.boundary.hex(HexPrefix::Add));
+    return m_currentWp.difficulty;
 }
 
 unsigned PoolManager::getConnectionSwitches()

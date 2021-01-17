@@ -1312,6 +1312,7 @@ void EthStratumClient::processResponse(Json::Value& responseObject)
 
             if (jPrm.isArray() && !jPrm.empty())
             {
+                //cnote << EthWhite << "received -> " << jPrm << EthReset; 
                 m_current.job = jPrm.get(Json::Value::ArrayIndex(0), "").asString();
 
                 if (m_conn->StratumMode() == EthStratumClient::ETHEREUMSTRATUM)
@@ -1324,6 +1325,7 @@ void EthStratumClient::processResponse(Json::Value& responseObject)
                         m_current.seed = h256(sSeedHash);
                         m_current.header = h256(sHeaderHash);
                         m_current.boundary = m_session->nextWorkBoundary;
+                        m_current.difficulty = m_session->nextDifficulty;
                         m_current.startNonce = m_session->extraNonce;
                         m_current.exSizeBytes = m_session->extraNonceSizeBytes;
                         m_current_timestamp = std::chrono::steady_clock::now();
@@ -1340,37 +1342,12 @@ void EthStratumClient::processResponse(Json::Value& responseObject)
                     string sSeedHash = jPrm.get(Json::Value::ArrayIndex(prmIdx++), "").asString();
                     string sShareTarget =
                         jPrm.get(Json::Value::ArrayIndex(prmIdx++), "").asString();
-
-                    // Only some eth-proxy compatible implementations carry the block number
-                    // namely ethermine.org
-                    m_current.block = -1;
-                    if (m_conn->StratumMode() == EthStratumClient::ETHPROXY &&
-                        jPrm.size() > prmIdx &&
-                        jPrm.get(Json::Value::ArrayIndex(prmIdx), "").asString().substr(0, 2) ==
-                            "0x")
-                    {
-                        try
-                        {
-                            m_current.block =
-                                std::stoul(jPrm.get(Json::Value::ArrayIndex(prmIdx), "").asString(),
-                                    nullptr, 16);
-                            /*
-                            check if the block number is in a valid range
-                            A year has ~31536000 seconds
-                            50 years have ~1576800000
-                            assuming a (very fast) blocktime of 10s:
-                            ==> in 50 years we get 157680000 (=0x9660180) blocks
-                            */
-                            if (m_current.block > 0x9660180)
-                                throw new std::exception();
-                        }
-                        catch (const std::exception&)
-                        {
-                            m_current.block = -1;
-                        }
-                    }
-
+                    string sHeight = jPrm.get(Json::Value::ArrayIndex(prmIdx++), "").asString();
+                    string sMinerKey = jPrm.get(Json::Value::ArrayIndex(prmIdx++), "").asString();
+                    string sWorkId = jPrm.get(Json::Value::ArrayIndex(prmIdx++), "").asString();
+                    
                     // coinmine.pl fix
+                    std::string sShareTarget_orig = sShareTarget;
                     int l = sShareTarget.length();
                     if (l < 66)
                         sShareTarget = "0x" + string(66 - l, '0') + sShareTarget.substr(2);
@@ -1378,6 +1355,13 @@ void EthStratumClient::processResponse(Json::Value& responseObject)
                     m_current.seed = h256(sSeedHash);
                     m_current.header = h256(sHeaderHash);
                     m_current.boundary = h256(sShareTarget);
+                    m_current.difficulty = std::stoull(sShareTarget_orig);
+                    m_current.merkle_root = bytes(sSeedHash.begin(), sSeedHash.end());
+                    m_current.work = bytes(sHeaderHash.begin(), sHeaderHash.end());
+                    m_current.miner_key = bytes(sMinerKey.begin(), sMinerKey.end());
+                    m_current.work_id = sWorkId;
+                    
+                    cnote << EthWhite << "difficulty set to -> " << m_current.difficulty << EthReset;
                     m_current_timestamp = std::chrono::steady_clock::now();
 
                     // This will signal to dispatch the job
@@ -1422,6 +1406,7 @@ void EthStratumClient::processResponse(Json::Value& responseObject)
 
             m_current.header = h256(header);
             m_current.boundary = h256(m_session->nextWorkBoundary.hex(HexPrefix::Add));
+            m_current.difficulty = m_session->nextDifficulty;
             m_current.epoch = m_session->epoch;
             m_current.algo = m_session->algo;
             m_current.startNonce = m_session->extraNonce;
@@ -1443,6 +1428,8 @@ void EthStratumClient::processResponse(Json::Value& responseObject)
                         max(jPrm.get(Json::Value::ArrayIndex(0), 1).asDouble(), 0.0001);
 
                     m_session->nextWorkBoundary = h256(dev::getTargetFromDiff(nextWorkDifficulty));
+                    m_session->nextDifficulty = std::stoull(jPrm.get(Json::Value::ArrayIndex(0), 1).asString());
+                    cnote << EthWhite << "setting difficulty to -> " << m_session->nextDifficulty << EthReset;
                 }
             }
             else
@@ -1499,8 +1486,10 @@ void EthStratumClient::processResponse(Json::Value& responseObject)
 
             if (!target.empty())
             {
+                string target_orig = target; 
                 target = "0x" + dev::padLeft(target, 64, '0');
                 m_session->nextWorkBoundary = h256(target);
+                m_session->nextDifficulty = std::stoull(target_orig);
             }
 
             m_session->algo = jPrm.get("algo", "ethash").asString();
@@ -1623,9 +1612,10 @@ void EthStratumClient::submitSolution(const Solution& solution)
     case EthStratumClient::ETHPROXY:
 
         jReq["method"] = "eth_submitWork";
-        jReq["params"].append(toHex(solution.nonce, HexPrefix::Add));
-        jReq["params"].append(solution.work.header.hex(HexPrefix::Add));
-        jReq["params"].append(solution.mixHash.hex(HexPrefix::Add));
+        jReq["params"].append(std::to_string(solution.nonce));
+        jReq["params"].append(std::to_string(solution.distance));
+        jReq["params"].append(std::to_string(solution.timestamp));
+        jReq["params"].append(solution.work.work_id);
         if (!m_conn->Workername().empty())
             jReq["worker"] = m_conn->Workername();
 

@@ -40,6 +40,8 @@ struct Session
     h256 nextWorkBoundary =
         h256("0x00000000ffff0000000000000000000000000000000000000000000000000000");
 
+    uint64_t nextDifficulty = 291678954710059ULL;
+  
     // EthereumStratum (2 only)
     bool firstMiningSet = false;
     unsigned int timeout = 30;  // Default to 30 seconds

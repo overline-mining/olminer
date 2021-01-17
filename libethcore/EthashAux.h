@@ -57,7 +57,11 @@ struct WorkPackage
 
     std::string job;  // Job identifier can be anything. Not necessarily a hash
 
-    std::vector<uint8_t> miner_key, timestamp;
+    std::string work_id;
+    bytes miner_key;
+    bytes merkle_root;
+    bytes work;
+    bytes timestamp;
     h256 boundary;
     h256 header;  ///< When h256() means "pause until notified a new work package is available".
     h256 seed;
@@ -66,6 +70,7 @@ struct WorkPackage
     int block = -1;
 
     uint64_t startNonce = 0;
+    uint64_t difficulty = 291678954710059ULL; // default construct to BC minimum diff
     uint16_t exSizeBytes = 0;
 
     std::string algo = "olhash";
@@ -80,6 +85,7 @@ struct Solution
     unsigned midx;                                 // Originating miner Id
     uint64_t distance;                             // "edit distance" (not really a distance)
     uint64_t difficulty;                           // diffculty at which block was solved (time dependent)
+    int64_t timestamp;                             // timestamp from within miner loop
 };
 
 }  // namespace eth

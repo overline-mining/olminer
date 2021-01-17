@@ -34,6 +34,8 @@ along with ethminer.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <boost/version.hpp>
 
+#include <libolhash/olhash.h>
+
 #if 0
 #include <boost/fiber/numa/pin_thread.hpp>
 #include <boost/fiber/numa/topology.hpp>
@@ -122,7 +124,7 @@ static size_t getTotalPhysAvailableMemory()
  */
 unsigned CPUMiner::getNumDevices()
 {
-    return 1; // FIXME - hack to reduce resource usage while testing
+    return 8; // FIXME - hack to reduce resource usage while testing
 #if 0
     static unsigned cpus = 0;
 
@@ -262,11 +264,25 @@ void CPUMiner::search(const dev::eth::WorkPackage& w)
 {
     constexpr size_t blocksize = 30;
 
-    const auto& context = ethash::get_global_epoch_context_full(w.epoch);
-    const auto header = ethash::hash256_from_bytes(w.header.data());
-    const auto boundary = ethash::hash256_from_bytes(w.boundary.data());
+    //const auto& context = ethash::get_global_epoch_context_full(w.epoch);
+    //const auto header = ethash::hash256_from_bytes(w.header.data());
+    //const auto boundary = ethash::hash256_from_bytes(w.boundary.data());
+    const auto work = w.work;
+    const auto merkle_root = w.merkle_root;
+    const auto miner_key = w.miner_key;
+    const auto difficulty = w.difficulty;
     auto nonce = w.startNonce;
 
+    /*
+    cpulog << EthWhite;
+    cpulog << "work: " << std::string(work.begin(), work.end());
+    cpulog << "merkle_root: " << std::string(merkle_root.begin(), merkle_root.end());
+    cpulog << "miner_key: " << std::string(miner_key.begin(), miner_key.end());
+    cpulog << "difficulty: " << difficulty;
+    cpulog << "nonce: " << nonce;
+    cpulog << EthReset;
+    */
+    
     while (true)
     {
         if (m_new_work.load(std::memory_order_relaxed))  // new work arrived ?
@@ -277,16 +293,16 @@ void CPUMiner::search(const dev::eth::WorkPackage& w)
 
         if (shouldStop())
             break;
-
-
-        auto r = ethash::search(context, header, boundary, nonce, blocksize);
+        
+        auto r = dev::ol::search(work, miner_key, merkle_root, difficulty, nonce, blocksize);
         if (r.solution_found)
         {
-            h256 mix{reinterpret_cast<byte*>(r.mix_hash.bytes), h256::ConstructFromPointer};
-            auto sol = Solution{r.nonce, mix, w, std::chrono::steady_clock::now(), m_index, 0, 0};
+            h256 mix;
+            auto sol = Solution{r.nonce, mix, w, std::chrono::steady_clock::now(),
+                                m_index, r.distance, difficulty, r.timestamp};
 
             cpulog << EthWhite << "Job: " << w.header.abridged()
-                   << " Sol: " << toHex(sol.nonce, HexPrefix::Add) << EthReset;
+                   << " Sol: " << sol.nonce << ", " << sol.distance << EthReset;
             Farm::f().submitProof(sol);
         }
         nonce += blocksize;

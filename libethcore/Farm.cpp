@@ -30,6 +30,8 @@
 #include <libolhash-cpu/CPUMiner.h>
 #endif
 
+#include <libolhash/olhash.h>
+
 namespace dev
 {
 namespace eth
@@ -492,15 +494,20 @@ void Farm::submitProofAsync(Solution const& _s)
 {
     if (!m_Settings.noEval)
     {
-        Result r = EthashAux::eval(_s.work.epoch, _s.work.header, _s.nonce);
-        if (r.value > _s.work.boundary)
+        auto distance = ol::eval(_s.work.work, _s.work.miner_key, _s.work.merkle_root,
+                                 _s.nonce, _s.timestamp, false);
+        //string nonce_string = std::to_string(_s.nonce);
+        //bytes nonce_bytes(nonce_string.begin(), nonce_string.end());        
+        //cnote << "Proof: " << nonce_string << " " <<  ol::blake2bl_from_bytes(nonce_bytes) << " " << _s.timestamp;
+        if (distance < _s.work.difficulty)
         {
             accountSolution(_s.midx, SolutionAccountingEnum::Failed);
             cwarn << "GPU " << _s.midx
                   << " gave incorrect result. Lower overclocking values if it happens frequently.";
             return;
         }
-        m_onSolutionFound(Solution{_s.nonce, r.mixHash, _s.work, _s.tstamp, _s.midx, _s.distance, _s.difficulty});
+        m_onSolutionFound(Solution{_s.nonce, h256(), _s.work, _s.tstamp, _s.midx,
+                                   _s.distance, _s.difficulty, _s.timestamp});
     }
     else
         m_onSolutionFound(_s);
