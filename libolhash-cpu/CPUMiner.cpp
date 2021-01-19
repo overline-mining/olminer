@@ -120,11 +120,11 @@ static size_t getTotalPhysAvailableMemory()
 }
 
 /*
- * return numbers of available CPUs
+* return numbers of available CPUs
  */
 unsigned CPUMiner::getNumDevices()
 {
-    return 8; // FIXME - hack to reduce resource usage while testing
+  return 8;
 #if 0
     static unsigned cpus = 0;
 
@@ -302,7 +302,7 @@ void CPUMiner::search(const dev::eth::WorkPackage& w)
                                 m_index, r.distance, difficulty, r.timestamp};
 
             cpulog << EthWhite << "Job: " << w.header.abridged()
-                   << " Sol: " << sol.nonce << ", " << sol.distance << EthReset;
+                   << " Sol: " << sol.nonce << ", " << sol.distance << ", " << sol.timestamp << EthReset;
             Farm::f().submitProof(sol);
         }
         nonce += blocksize;

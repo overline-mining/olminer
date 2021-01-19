@@ -83,16 +83,16 @@ search_result search(const bytes& work,
   uint64_t best_nonce = 0;
   olhash_result best_result{0, 0};
   for( uint64_t i_nonce = nonce; i_nonce < whenStop; ++i_nonce ) {
-    std::chrono::milliseconds timems;
-    timems = std::chrono::duration_cast< std::chrono::milliseconds >(
+    std::chrono::seconds times;
+    times = std::chrono::duration_cast< std::chrono::seconds >(
       std::chrono::system_clock::now().time_since_epoch()
     );
-    auto timems_count = timems.count();
+    auto times_count = times.count();
 
-    uint64_t distance = eval(work, miner_key, merkle_root, i_nonce, timems_count);
+    uint64_t distance = eval(work, miner_key, merkle_root, i_nonce, times_count);
     if( distance > best_result.distance ) {
       best_result.distance = distance;
-      best_result.timestamp = timems_count;
+      best_result.timestamp = times_count;
       best_nonce = i_nonce;      
     }                                 
   }
