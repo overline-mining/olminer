@@ -22,8 +22,8 @@
 #include <libethash-cl/CLMiner.h>
 #endif
 
-#if ETH_ETHASHCUDA
-#include <libethash-cuda/CUDAMiner.h>
+#if OL_OLHASHCUDA
+#include <libolhash-cuda/CUDAMiner.h>
 #endif
 
 #if OL_OLHASHCPU
@@ -264,7 +264,7 @@ bool Farm::start()
         for (auto it = m_DevicesCollection.begin(); it != m_DevicesCollection.end(); it++)
         {
             TelemetryAccountType minerTelemetry;
-#if ETH_ETHASHCUDA
+#if OL_OLHASHCUDA
             if (it->second.subscriptionType == DeviceSubscriptionTypeEnum::Cuda)
             {
                 minerTelemetry.prefix = "cu";

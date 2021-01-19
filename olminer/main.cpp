@@ -28,8 +28,8 @@
 #if ETH_ETHASHCL
 #include <libethash-cl/CLMiner.h>
 #endif
-#if ETH_ETHASHCUDA
-#include <libethash-cuda/CUDAMiner.h>
+#if OL_OLHASHCUDA
+#include <libolhash-cuda/CUDAMiner.h>
 #endif
 #if OL_OLHASHCPU
 #include <libolhash-cpu/CPUMiner.h>
@@ -229,7 +229,7 @@ public:
 #if ETH_ETHASHCL
                     "cl",
 #endif
-#if ETH_ETHASHCUDA
+#if OL_OLHASHCUDA
                     "cu",
 #endif
 #if OL_OLHASHCPU
@@ -307,7 +307,7 @@ public:
 
 #endif
 
-#if ETH_ETHASHCL || ETH_ETHASHCUDA || OL_OLHASH_CPU
+#if ETH_ETHASHCL || OL_OLHASHCUDA || OL_OLHASH_CPU
 
         app.add_flag("--list-devices", m_shouldListDevices, "");
 
@@ -327,7 +327,7 @@ public:
 
 #endif
 
-#if ETH_ETHASHCUDA
+#if OL_OLHASHCUDA
 
         app.add_option("--cuda-devices,--cu-devices", m_CUSettings.devices, "");
 
@@ -470,7 +470,7 @@ public:
         }
 
 
-#if ETH_ETHASHCUDA
+#if OL_OLHASHCUDA
         if (sched == "auto")
             m_CUSettings.schedule = 0;
         else if (sched == "spin")
@@ -511,7 +511,7 @@ public:
         if (m_minerType == MinerType::CL || m_minerType == MinerType::Mixed)
             CLMiner::enumDevices(m_DevicesCollection);
 #endif
-#if ETH_ETHASHCUDA
+#if OL_OLHASHCUDA
         if (m_minerType == MinerType::CUDA || m_minerType == MinerType::Mixed)
             CUDAMiner::enumDevices(m_DevicesCollection);
 #endif
@@ -532,7 +532,7 @@ public:
             cout << setw(5) << "Type ";
             cout << setw(30) << "Name                          ";
 
-#if ETH_ETHASHCUDA
+#if OL_OLHASHCUDA
             if (m_minerType == MinerType::CUDA || m_minerType == MinerType::Mixed)
             {
                 cout << setw(5) << "CUDA ";
@@ -561,7 +561,7 @@ public:
             cout << setw(5) << "---- ";
             cout << setw(30) << "----------------------------- ";
 
-#if ETH_ETHASHCUDA
+#if OL_OLHASHCUDA
             if (m_minerType == MinerType::CUDA || m_minerType == MinerType::Mixed)
             {
                 cout << setw(5) << "---- ";
@@ -606,7 +606,7 @@ public:
                     break;
                 }
                 cout << setw(30) << (it->second.name).substr(0, 28);
-#if ETH_ETHASHCUDA
+#if OL_OLHASHCUDA
                 if (m_minerType == MinerType::CUDA || m_minerType == MinerType::Mixed)
                 {
                     cout << setw(5) << (it->second.cuDetected ? "Yes" : "");
@@ -639,7 +639,7 @@ public:
         // Use CUDA first when available then, as second, OpenCL
 
         // Apply discrete subscriptions (if any)
-#if ETH_ETHASHCUDA
+#if OL_OLHASHCUDA
         if (m_CUSettings.devices.size() &&
             (m_minerType == MinerType::CUDA || m_minerType == MinerType::Mixed))
         {
@@ -693,7 +693,7 @@ public:
 
 
         // Subscribe all detected devices
-#if ETH_ETHASHCUDA
+#if OL_OLHASHCUDA
         if (!m_CUSettings.devices.size() &&
             (m_minerType == MinerType::CUDA || m_minerType == MinerType::Mixed))
         {
@@ -771,7 +771,7 @@ public:
 #if ETH_ETHASHCL
              << "    -G,--opencl         Mine/Benchmark using OpenCL only (not functional yet)" << endl
 #endif
-#if ETH_ETHASHCUDA
+#if OL_OLHASHCUDA
              << "    -U,--cuda           Mine/Benchmark using CUDA only" << endl
 #endif
 #if OL_OLHASHCPU
@@ -796,7 +796,7 @@ public:
 #if ETH_ETHASHCL
              << "cl,"
 #endif
-#if ETH_ETHASHCUDA
+#if OL_OLHASHCUDA
              << "cu,"
 #endif
 #if OL_OLHASHCPU
@@ -812,7 +812,7 @@ public:
 #if ETH_ETHASHCL
              << "                        'cl'   Extended OpenCL options" << endl
 #endif
-#if ETH_ETHASHCUDA
+#if OL_OLHASHCUDA
              << "                        'cu'   Extended CUDA options" << endl
 #endif
 #if OL_OLHASHCPU
