@@ -32,4 +32,5 @@ jobs:
         mkdir -p build
         cd build
         cmake -DOLHASHCUDA=OFF ..
-        make -j $(nproc)
+        make
+        ls olminer
