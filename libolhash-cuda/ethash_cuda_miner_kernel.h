@@ -53,7 +53,7 @@ typedef union
 void set_constants(hash128_t* _dag, uint32_t _dag_size, hash64_t* _light, uint32_t _light_size);
 void get_constants(hash128_t** _dag, uint32_t* _dag_size, hash64_t** _light, uint32_t* _light_size);
 
-void set_common_data(hash64_t _work, hash64_t _miner_key, hash64_t _merkle_root, hash64_t _timestamp, size_t _timestamp_length);
+void set_common_data(hash64_t _work, hash64_t _miner_key, hash64_t _merkle_root, hash64_t _timestamp, size_t _miner_key_length, size_t _timestamp_length);
 
 void set_header(hash32_t _header);
 

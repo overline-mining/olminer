@@ -6,6 +6,7 @@ __constant__ uint32_t d_light_size;
 __constant__ hash64_t* d_light;
 __constant__ hash64_t d_work;
 __constant__ hash64_t d_miner_key;
+__constant__ uint64_t d_miner_key_length;
 __constant__ hash64_t d_merkle_root;
 __constant__ hash64_t d_timestamp;
 __constant__ uint64_t d_timestamp_length;

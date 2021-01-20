@@ -4,16 +4,16 @@
 [![Gitter](https://img.shields.io/gitter/room/nwjs/nw.js.svg)][Gitter]
 [![Releases](https://img.shields.io/github/downloads/ethereum-mining/ethminer/total.svg)][Releases]
 
-> Ethereum miner with OpenCL, CUDA and stratum support
+> Overline miner with CUDA (eventually OpenCL) and stratum support
 
-**Ethminer** is an Ethash GPU mining worker: with ethminer you can mine every coin which relies on an Ethash Proof of Work thus including Ethereum, Ethereum Classic, Metaverse, Musicoin, Ellaism, Pirl, Expanse and others. This is the actively maintained version of ethminer. It originates from [cpp-ethereum] project (where GPU mining has been discontinued) and builds on the improvements made in [Genoil's fork]. See [FAQ](#faq) for more details.
+**Olminer** is an olhash CPU and GPU mining worker: with olminer you can mine overline proof of distance compliant blockchain, so for now, only Overline. This is the actively maintained version of olminer. It originates from the [ethminer] project and adapts its framework to Overline's unique proof of work system. See [FAQ](#faq) for more details.
 
 ## Features
 
-* OpenCL mining
-* Nvidia CUDA mining
+* CPU Mining
+* Nvidia CUDA mining in development
+* OpenCL mining (not yet there)
 * realistic benchmarking against arbitrary epoch/DAG/blocknumber
-* on-GPU DAG generation (no more DAG files on disk)
 * stratum mining without proxy
 * OpenCL devices picking
 * farm failover (getwork + stratum)
@@ -34,7 +34,7 @@
 
 ## Install
 
-[![Releases](https://img.shields.io/github/downloads/ethereum-mining/ethminer/total.svg)][Releases]
+[![Releases](https://img.shields.io/github/downloads/lgray/olminer/total.svg)][Releases]
 
 Standalone **executables** for *Linux*, *macOS* and *Windows* are provided in
 the [Releases] section.

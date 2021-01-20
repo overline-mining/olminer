@@ -342,6 +342,7 @@ void CUDAMiner::search(
                     *reinterpret_cast<hash64_t const*>(miner_key.data()),
                     *reinterpret_cast<hash64_t const*>(merkle_root.data()),
                     *reinterpret_cast<hash64_t const*>(btimestamp.data()),
+                    miner_key.size(),
                     btimestamp.size());
 
     if (m_current_target != difficulty)
