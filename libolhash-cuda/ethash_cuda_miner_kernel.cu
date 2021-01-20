@@ -145,12 +145,13 @@ void get_constants(hash128_t** _dag, uint32_t* _dag_size, hash64_t** _light, uin
     }
 }
 
-void set_common_data(hash64_t _work, hash64_t _miner_key, hash64_t _merkle_root, hash64_t _timestamp)
+void set_common_data(hash64_t _work, hash64_t _miner_key, hash64_t _merkle_root, hash64_t _timestamp, size_t _timestamp_length)
 {
   CUDA_SAFE_CALL(cudaMemcpyToSymbol(d_work, &_work, sizeof(hash64_t)));
   CUDA_SAFE_CALL(cudaMemcpyToSymbol(d_miner_key, &_miner_key, sizeof(hash64_t)));
   CUDA_SAFE_CALL(cudaMemcpyToSymbol(d_merkle_root, &_merkle_root, sizeof(hash64_t)));
   CUDA_SAFE_CALL(cudaMemcpyToSymbol(d_timestamp, &_timestamp, sizeof(hash64_t)));
+  CUDA_SAFE_CALL(cudaMemcpyToSymbol(d_timestamp_length, &_timestamp_length, sizeof(uint64_t)));
 }
 
 void set_header(hash32_t _header)

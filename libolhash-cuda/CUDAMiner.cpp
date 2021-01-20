@@ -227,10 +227,14 @@ void CUDAMiner::workLoop()
             // Persist most recent job.
             // Job's differences should be handled at higher level
             current = w;
-            uint64_t upper64OfBoundary = (uint64_t)(u64)((u256)current.boundary >> 192);
 
             // Eventually start searching
-            search(current.header.data(), upper64OfBoundary, current.startNonce, w);
+            search(current.header.data(),
+                   current.work,
+                   current.miner_key,
+                   current.merkle_root,
+                   std::to_string(current.timestamp),
+                   current.difficulty, current.startNonce, w);
         }
 
         // Reset miner and stop working
@@ -323,13 +327,27 @@ void CUDAMiner::enumDevices(std::map<string, DeviceDescriptor>& _DevicesCollecti
 }
 
 void CUDAMiner::search(
-    uint8_t const* header, uint64_t target, uint64_t start_nonce, const dev::eth::WorkPackage& w)
+    uint8_t const* header,
+    const bytes& work,
+    const bytes& miner_key,
+    const bytes& merkle_root,
+    const std::string& timestamp,
+    const uint64_t difficulty,
+    uint64_t start_nonce,
+    const dev::eth::WorkPackage& w)
 {
     set_header(*reinterpret_cast<hash32_t const*>(header));
-    if (m_current_target != target)
+    bytes btimestamp(timestamp.begin(), timestamp.end());
+    set_common_data(*reinterpret_cast<hash64_t const*>(work.data()),
+                    *reinterpret_cast<hash64_t const*>(miner_key.data()),
+                    *reinterpret_cast<hash64_t const*>(merkle_root.data()),
+                    *reinterpret_cast<hash64_t const*>(btimestamp.data()),
+                    btimestamp.size());
+
+    if (m_current_target != difficulty)
     {
-        set_target(target);
-        m_current_target = target;
+        set_target(difficulty);
+        m_current_target = difficulty;
     }
 
     // prime each stream, clear search result buffers and start the search
@@ -382,6 +400,7 @@ void CUDAMiner::search(
             uint32_t found_count = std::min((unsigned)buffer.count, MAX_SEARCH_RESULTS);
 
             uint32_t gids[MAX_SEARCH_RESULTS];
+            uint64_t distances[MAX_SEARCH_RESULTS];
             h256 mixes[MAX_SEARCH_RESULTS];
 
             if (found_count)
@@ -396,6 +415,7 @@ void CUDAMiner::search(
                     gids[i] = buffer.result[i].gid;
                     memcpy(mixes[i].data(), (void*)&buffer.result[i].mix,
                         sizeof(buffer.result[i].mix));
+                    distances[i] = buffer.result[i].distance;
                 }
             }
 
@@ -413,9 +433,10 @@ void CUDAMiner::search(
                     uint64_t nonce = nonce_base + gids[i];
 
                     Farm::f().submitProof(
-                        Solution{nonce, mixes[i], w, std::chrono::steady_clock::now(), m_index});
-                    cudalog << EthWhite << "Job: " << w.header.abridged() << " Sol: 0x"
-                            << toHex(nonce) << EthReset;
+                        Solution{nonce, mixes[i], w, std::chrono::steady_clock::now(),
+                                 m_index, distances[i], difficulty, std::stoull(timestamp)});
+                    cudalog << EthWhite << "Job: " << w.header.abridged() << " Sol: "
+                            << nonce << ", " << distances[i] << ", " << timestamp << EthReset;
                 }
             }
         }
