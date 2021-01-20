@@ -124,7 +124,7 @@ static size_t getTotalPhysAvailableMemory()
  */
 unsigned CPUMiner::getNumDevices()
 {
-  return 8;
+  //return 8;
 #if 0
     static unsigned cpus = 0;
 
@@ -271,6 +271,7 @@ void CPUMiner::search(const dev::eth::WorkPackage& w)
     const auto merkle_root = w.merkle_root;
     const auto miner_key = w.miner_key;
     const auto difficulty = w.difficulty;
+    const auto htimestamp = w.timestamp;
     auto nonce = w.startNonce;
 
     /*
@@ -294,12 +295,12 @@ void CPUMiner::search(const dev::eth::WorkPackage& w)
         if (shouldStop())
             break;
         
-        auto r = dev::ol::search(work, miner_key, merkle_root, difficulty, nonce, blocksize);
+        auto r = dev::ol::search(work, miner_key, merkle_root, htimestamp, difficulty, nonce, blocksize);
         if (r.solution_found)
         {
             h256 mix;
             auto sol = Solution{r.nonce, mix, w, std::chrono::steady_clock::now(),
-                                m_index, r.distance, difficulty, r.timestamp};
+                                m_index, r.distance, difficulty, htimestamp};
 
             cpulog << EthWhite << "Job: " << w.header.abridged()
                    << " Sol: " << sol.nonce << ", " << sol.distance << ", " << sol.timestamp << EthReset;

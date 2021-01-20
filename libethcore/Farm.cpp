@@ -494,8 +494,10 @@ void Farm::submitProofAsync(Solution const& _s)
 {
     if (!m_Settings.noEval)
     {
+        std::string stimestamp = std::to_string(_s.timestamp);
+        bytes btimestamp(stimestamp.begin(), stimestamp.end());
         auto distance = ol::eval(_s.work.work, _s.work.miner_key, _s.work.merkle_root,
-                                 _s.nonce, _s.timestamp, false);
+                                 btimestamp, _s.nonce, false);
         //string nonce_string = std::to_string(_s.nonce);
         //bytes nonce_bytes(nonce_string.begin(), nonce_string.end());        
         //cnote << "Proof: " << nonce_string << " " <<  ol::blake2bl_from_bytes(nonce_bytes) << " " << _s.timestamp;

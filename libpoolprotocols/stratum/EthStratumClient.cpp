@@ -1345,6 +1345,8 @@ void EthStratumClient::processResponse(Json::Value& responseObject)
                     string sHeight = jPrm.get(Json::Value::ArrayIndex(prmIdx++), "").asString();
                     string sMinerKey = jPrm.get(Json::Value::ArrayIndex(prmIdx++), "").asString();
                     string sWorkId = jPrm.get(Json::Value::ArrayIndex(prmIdx++), "").asString();
+                    string sTimestamp = jPrm.get(Json::Value::ArrayIndex(prmIdx++), "").asString();
+                    
                     
                     // coinmine.pl fix
                     std::string sShareTarget_orig = sShareTarget;
@@ -1359,6 +1361,7 @@ void EthStratumClient::processResponse(Json::Value& responseObject)
                     m_current.merkle_root = bytes(sSeedHash.begin(), sSeedHash.end());
                     m_current.work = bytes(sHeaderHash.begin(), sHeaderHash.end());
                     m_current.miner_key = bytes(sMinerKey.begin(), sMinerKey.end());
+                    m_current.timestamp = std::stoull(sTimestamp);
                     m_current.work_id = sWorkId;
                     
                     cnote << EthWhite << "difficulty set to -> " << m_current.difficulty << EthReset;

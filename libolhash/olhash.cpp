@@ -41,18 +41,11 @@ uint64_t calc_distance(const bytes& work, const bytes& soln) {
 uint64_t eval(const bytes& work,
               const bytes& miner_key,
               const bytes& merkle_root,
+              const bytes& timestamp,
               uint64_t nonce,
-              int64_t timestamp,
               bool print_tohash) {
-  std::stringstream nonce_stream, ts_stream;
-  nonce_stream << std::dec << nonce;
-  ts_stream << std::dec << timestamp;
-
-  std::string nonce_str = nonce_stream.str();
-  std::string time_str = ts_stream.str();
-
+  std::string nonce_str = std::to_string(nonce);
   bytes nonce_bytes(nonce_str.begin(), nonce_str.end());
-  bytes ts_bytes(time_str.begin(), time_str.end());
 
   std::string nonce_hash_str = blake2bl_from_bytes(nonce_bytes).hex();
 
@@ -60,7 +53,7 @@ uint64_t eval(const bytes& work,
   bytes tohash(miner_key.begin(), miner_key.end());
   tohash.insert(tohash.end(), merkle_root.begin(), merkle_root.end());
   tohash.insert(tohash.end(), nonce_hash.begin(), nonce_hash.end());
-  tohash.insert(tohash.end(), ts_bytes.begin(), ts_bytes.end());
+  tohash.insert(tohash.end(), timestamp.begin(), timestamp.end());
 
   if(print_tohash) {
     std::cout << "tohash -> " << std::string(tohash.begin(), tohash.end()) << ' ' << tohash.size() << std::endl;
@@ -75,6 +68,7 @@ uint64_t eval(const bytes& work,
 search_result search(const bytes& work,
                      const bytes& miner_key,
                      const bytes& merkle_root,
+                     uint64_t timestamp,
                      uint64_t difficulty,
                      uint64_t nonce,
                      size_t iterations) {
@@ -82,17 +76,14 @@ search_result search(const bytes& work,
   const size_t whenStop = nonce + iterations;
   uint64_t best_nonce = 0;
   olhash_result best_result{0, 0};
+  std::string stimestamp = std::to_string(timestamp);
+  bytes btimestamp(stimestamp.begin(), stimestamp.end());
   for( uint64_t i_nonce = nonce; i_nonce < whenStop; ++i_nonce ) {
-    std::chrono::seconds times;
-    times = std::chrono::duration_cast< std::chrono::seconds >(
-      std::chrono::system_clock::now().time_since_epoch()
-    );
-    auto times_count = times.count();
 
-    uint64_t distance = eval(work, miner_key, merkle_root, i_nonce, times_count);
+    uint64_t distance = eval(work, miner_key, merkle_root, btimestamp, i_nonce);
     if( distance > best_result.distance ) {
       best_result.distance = distance;
-      best_result.timestamp = times_count;
+      best_result.timestamp = timestamp;
       best_nonce = i_nonce;      
     }                                 
   }

@@ -18,7 +18,8 @@ struct Search_Result
     // One word for gid and 8 for mix hash
     uint32_t gid;
     uint32_t mix[8];
-    uint32_t pad[7];  // pad to size power of 2
+    uint64_t distance;
+    uint32_t pad[5];  // pad to size power of 2
 };
 
 struct Search_results
@@ -51,6 +52,8 @@ typedef union
 
 void set_constants(hash128_t* _dag, uint32_t _dag_size, hash64_t* _light, uint32_t _light_size);
 void get_constants(hash128_t** _dag, uint32_t* _dag_size, hash64_t** _light, uint32_t* _light_size);
+
+void set_common_data(hash64_t _work, hash64_t _miner_key, hash64_t _merkle_root, hash64_t _timestamp);
 
 void set_header(hash32_t _header);
 

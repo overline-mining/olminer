@@ -33,14 +33,15 @@ namespace ol {
 
   uint64_t eval(const bytes& work,
                 const bytes& miner_key,
-                const bytes &merkle_root,
+                const bytes& merkle_root,
+                const bytes& timestamp,
                 uint64_t nonce,
-                int64_t timestamp,
                 bool print_tohash = false);
   
   search_result search(const bytes& work,
                        const bytes& miner_key,
                        const bytes& merkle_root,
+                       uint64_t timestamp,
                        uint64_t difficulty,
                        uint64_t nonce,
                        size_t iterations);

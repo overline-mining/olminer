@@ -25,7 +25,7 @@ set(PROJECT_VERSION 0.0.1)
 cable_set_build_type(DEFAULT Release CONFIGURATION_TYPES Release RelWithDebInfo)
 
 option(ETHASHCL "Build with OpenCL mining" OFF) # NOT AVAILABLE YET DO NOT TURN ON
-option(OLHASHCUDA "Build with CUDA mining" ON)
+option(OLHASHCUDA "Build with CUDA mining" OFF)
 option(OLHASHCPU "Build with CPU mining (only for development)" ON)
 option(ETHDBUS "Build with D-Bus support" OFF)
 option(APICORE "Build with API Server support" ON)

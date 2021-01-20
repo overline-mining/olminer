@@ -61,7 +61,7 @@ struct WorkPackage
     bytes miner_key;
     bytes merkle_root;
     bytes work;
-    bytes timestamp;
+    uint64_t timestamp;
     h256 boundary;
     h256 header;  ///< When h256() means "pause until notified a new work package is available".
     h256 seed;
@@ -85,7 +85,7 @@ struct Solution
     unsigned midx;                                 // Originating miner Id
     uint64_t distance;                             // "edit distance" (not really a distance)
     uint64_t difficulty;                           // diffculty at which block was solved (time dependent)
-    int64_t timestamp;                             // timestamp from within miner loop
+    uint64_t timestamp;                             // timestamp from the block submitted
 };
 
 }  // namespace eth
