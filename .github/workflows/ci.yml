@@ -33,5 +33,5 @@ jobs:
         cd build
         cmake -DOLHASHCUDA=OFF ..
         ls
-        cmake --build .
+        cmake --build . --config Release --target package
         ls olminer
