@@ -1,6 +1,6 @@
 include(FindSSE2)
 
-if (NOT HAVE_SSE2)
+#if (NOT HAVE_SSE2)
   set(SOURCES
     olhash.h
     olhash.cpp
@@ -8,19 +8,19 @@ if (NOT HAVE_SSE2)
     ref/blake2-impl.h
     ref/blake2b-ref.c
     )
-else ()
-  set(SOURCES
-    olhash.h
-    olhash.cpp
-    blake2.h
-    sse/blake2-config.h
-    sse/blake2-impl.h
-    sse/blake2b-load-sse2.h
-    sse/blake2b-load-sse41.h
-    sse/blake2b-round.h
-    sse/blake2b.c
-    )
-endif()
+#else ()
+#  set(SOURCES
+#    olhash.h
+#    olhash.cpp
+#    blake2.h
+#    sse/blake2-config.h
+#    sse/blake2-impl.h
+#    sse/blake2b-load-sse2.h
+#    sse/blake2b-load-sse41.h
+#    sse/blake2b-round.h
+#    sse/blake2b.c
+#    )
+#endif()
   
 
 hunter_add_package(OpenSSL)
