@@ -37,7 +37,7 @@ jobs:
     - name: export artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: olminer-executables
+        name: olminer-executables-${{ matrix.os }}
         retention-days: 5
         path: build/olminer.*
   
