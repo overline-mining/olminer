@@ -30,8 +30,14 @@ jobs:
     - name: build olminer
       run: |
         mkdir -p build
-        cd build
+        pushd build
         cmake -DOLHASHCUDA=OFF ..
-        ls
         cmake --build . --config Release --target package
-        ls olminer
+        popd
+    - name: export artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: olminer-executables
+        retention-days: 5
+        path: build/olminer.*
+  
