@@ -15,7 +15,7 @@ COPY ./ /usr/src/olminer
 
 WORKDIR /usr/src/olminer
 RUN git submodule update --init --recursive
-RUN rm -rf ./build ; mkdir -p ./build && cd ./build && cmake -DOLHASHCUDA=off -DCMAKE_BUILD_TYPE=Release -DHUNTER_JOBS_NUMBER=$(nproc) .. && make install
+RUN rm -rf ./build ; mkdir -p ./build && cd ./build && cmake -DOLHASHCUDA=OFF -DCMAKE_BUILD_TYPE=Release -DHUNTER_JOBS_NUMBER=$(nproc) .. && make install
 
 FROM debian:stable-slim
 RUN mkdir -p /home/bc
