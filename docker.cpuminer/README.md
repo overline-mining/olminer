@@ -1,6 +1,6 @@
 # Docker olminer
 
-This will build a CPU miner binary optimized for the CPU found on this system.
+This will build a CPU miner binary optimized for the CPU found on the system.
 
 ## Build
 
@@ -8,7 +8,13 @@ This will build a CPU miner binary optimized for the CPU found on this system.
 
 ## Run miner inside Docker
 
-To start the previously built miner, use ```docker run -e STRATUM_URL=stratum://0x6a37b22b7fbbe8cc1f34c86e729905472e342e01@157.245.116.220:3141 -d -n olminer-cpu olminer-cpu```
+To start the previously built miner, use ```docker run -d --restart=unless-stopped -e STRATUM_URL=stratum://0x6a37b22b7fbbe8cc1f34c86e729905472e342e01@157.245.116.220:3141 --name olminer-cpu olminer-cpu```
+
+If don't want to all CPU threads available to the miner use something like ```docker run -d --cpus=4 --restart=unless-stopped -e STRATUM_URL=stratum://0x6a37b22b7fbbe8cc1f34c86e729905472e342e01@157.245.116.220:3141 --name olminer-cpu olminer-cpu```
+
+To kill the miner type ```docker rm -f olminer-cpu```
+
+
 
 ## Run miner natively
 
