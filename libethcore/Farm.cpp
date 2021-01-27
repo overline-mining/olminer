@@ -498,15 +498,14 @@ void Farm::submitProofAsync(Solution const& _s)
         bytes btimestamp(stimestamp.begin(), stimestamp.end());
         auto distance = ol::eval(_s.work.work, _s.work.miner_key, _s.work.merkle_root,
                                  btimestamp, _s.nonce, false);
-        std::cout << "solution distance: " << _s.distance << " cpu recalc: " << distance << std::endl;
-        //string nonce_string = std::to_string(_s.nonce);
-        //bytes nonce_bytes(nonce_string.begin(), nonce_string.end());        
-        //cnote << "Proof: " << nonce_string << " " <<  ol::blake2bl_from_bytes(nonce_bytes) << " " << _s.timestamp;
+
         if (distance < _s.work.difficulty)
         {
             accountSolution(_s.midx, SolutionAccountingEnum::Failed);
             cwarn << "GPU " << _s.midx
-                  << " gave incorrect result. Lower overclocking values if it happens frequently.";
+                  << " gave incorrect result. (GPU) "
+                  << _s.distance << " != (CPU) " << distance
+                  << " Lower overclocking values if it happens frequently.";
             return;
         }
         m_onSolutionFound(Solution{_s.nonce, h256(), _s.work, _s.tstamp, _s.midx,

@@ -1,17 +1,12 @@
 #pragma once
 
-__constant__ uint32_t d_dag_size;
-__constant__ hash128_t* d_dag;
-__constant__ uint32_t d_light_size;
-__constant__ hash64_t* d_light;
 __constant__ uint8_t d_num_to_code[16] = {48,49,50,51,52,53,54,55,56,57,97,98,99,100,101,102};
 __constant__ uint8_t d_work[64];
 __constant__ uint8_t d_miner_key[64];
 __constant__ uint8_t d_merkle_root[64];
-__constant__ hash64_t d_timestamp[64];
+__constant__ uint8_t d_timestamp[64];
 __constant__ uint64_t d_miner_key_length;
 __constant__ uint64_t d_timestamp_length;
-__constant__ hash32_t d_header;
 __constant__ uint64_t d_target;
 
 #if (__CUDACC_VER_MAJOR__ > 8)

@@ -4,6 +4,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <vector>
 
 #include "cuda_runtime.h"
 
@@ -18,8 +19,7 @@ struct Search_Result
     // One word for gid and 8 for mix hash
     uint32_t gid;
     uint64_t distance;
-    uint32_t mix[8];
-    uint32_t pad[5];  // pad to size power of 2
+    uint32_t pad[1];  // pad to size power of 2
 };
 
 struct Search_results
@@ -28,41 +28,15 @@ struct Search_results
     uint32_t count = 0;
 };
 
-#define ACCESSES 64
-#define THREADS_PER_HASH (128 / 16)
-
-typedef struct
-{
-    uint4 uint4s[32 / sizeof(uint4)];
-} hash32_t;
-
-typedef union
-{
-    uint32_t words[128 / sizeof(uint32_t)];
-    uint2 uint2s[128 / sizeof(uint2)];
-    uint4 uint4s[128 / sizeof(uint4)];
-} hash128_t;
-
-typedef union
-{
-    uint32_t words[64 / sizeof(uint32_t)];
-    uint2 uint2s[64 / sizeof(uint2)];
-    uint4 uint4s[64 / sizeof(uint4)];
-} hash64_t;
-
-void set_constants(hash128_t* _dag, uint32_t _dag_size, hash64_t* _light, uint32_t _light_size);
-void get_constants(hash128_t** _dag, uint32_t* _dag_size, hash64_t** _light, uint32_t* _light_size);
-
-void set_common_data(hash64_t _work, hash64_t _miner_key, hash64_t _merkle_root, hash64_t _timestamp, size_t _miner_key_length, size_t _timestamp_length);
-
-void set_header(hash32_t _header);
+void set_common_data(const std::vector<uint8_t>& _work,
+                     const std::vector<uint8_t>& _miner_key,
+                     const std::vector<uint8_t>& _merkle_root,
+                     const std::vector<uint8_t>& _timestamp);
 
 void set_target(uint64_t _target);
 
 void run_olhash_search(uint32_t gridSize, uint32_t blockSize, cudaStream_t stream,
     volatile Search_results* g_output, uint64_t start_nonce);
-
-void ethash_generate_dag(uint64_t dag_size, uint32_t blocks, uint32_t threads, cudaStream_t stream);
 
 struct cuda_runtime_error : public virtual std::runtime_error
 {

@@ -42,6 +42,6 @@ file(GLOB sources "*.cpp" "*.cu")
 file(GLOB headers "*.h" "*.cuh")
 
 cuda_add_library(olhash-cuda STATIC ${sources} ${headers})
-target_link_libraries(olhash-cuda ethcore ethash::ethash Boost::thread)
+target_link_libraries(olhash-cuda ethcore Boost::thread)
 target_include_directories(olhash-cuda PUBLIC ${CUDA_INCLUDE_DIRS})
 target_include_directories(olhash-cuda PRIVATE .. ${CMAKE_CURRENT_BINARY_DIR})

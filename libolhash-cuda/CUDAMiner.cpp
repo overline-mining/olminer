@@ -16,7 +16,6 @@ along with ethminer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include <libethcore/Farm.h>
-#include <ethash/ethash.hpp>
 
 #include "CUDAMiner.h"
 
@@ -89,15 +88,11 @@ bool CUDAMiner::initEpoch_internal()
     // to check again dag sizes. They're changed for sure
     bool retVar = false;
     m_current_target = 0;
-    auto startInit = std::chrono::steady_clock::now();
-    size_t RequiredTotalMemory = (m_epochContext.dagSize + m_epochContext.lightSize);
-    size_t RequiredDagMemory = m_epochContext.dagSize;
 
     // Release the pause flag if any
     resume(MinerPauseEnum::PauseDueToInsufficientMemory);
     resume(MinerPauseEnum::PauseDueToInitEpochError);
 
-    bool lightOnHost = false;
     try
     {
       // If we have already enough memory allocated, we just have to
@@ -176,8 +171,7 @@ void CUDAMiner::workLoop()
             current = w;
 
             // Eventually start searching
-            search(current.header.data(),
-                   current.work,
+            search(current.work,
                    current.miner_key,
                    current.merkle_root,
                    std::to_string(current.timestamp),
@@ -274,7 +268,6 @@ void CUDAMiner::enumDevices(std::map<string, DeviceDescriptor>& _DevicesCollecti
 }
 
 void CUDAMiner::search(
-    uint8_t const* header,
     const bytes& work,
     const bytes& miner_key,
     const bytes& merkle_root,
@@ -283,19 +276,14 @@ void CUDAMiner::search(
     uint64_t start_nonce,
     const dev::eth::WorkPackage& w)
 {
-    set_header(*reinterpret_cast<hash32_t const*>(header));
     bytes btimestamp(timestamp.begin(), timestamp.end());
-    set_common_data(*reinterpret_cast<hash64_t const*>(work.data()),
-                    *reinterpret_cast<hash64_t const*>(miner_key.data()),
-                    *reinterpret_cast<hash64_t const*>(merkle_root.data()),
-                    *reinterpret_cast<hash64_t const*>(btimestamp.data()),
-                    miner_key.size(),
-                    btimestamp.size());
+    set_common_data(work, miner_key, merkle_root, btimestamp);
 
+    auto tweaked_diff = uint64_t(1.01666*difficulty);
     if (m_current_target != difficulty)
     {
-        set_target(difficulty);
-        m_current_target = difficulty;
+        set_target(tweaked_diff);
+        m_current_target = tweaked_diff;
     }
 
     // prime each stream, clear search result buffers and start the search
@@ -361,8 +349,6 @@ void CUDAMiner::search(
                 for (uint32_t i = 0; i < found_count; i++)
                 {
                     gids[i] = buffer.result[i].gid;
-                    memcpy(mixes[i].data(), (void*)&buffer.result[i].mix,
-                        sizeof(buffer.result[i].mix));
                     distances[i] = buffer.result[i].distance;
                 }
             }

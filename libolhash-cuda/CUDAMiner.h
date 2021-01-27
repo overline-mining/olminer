@@ -17,7 +17,7 @@ along with ethminer.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include "ethash_cuda_miner_kernel.h"
+#include "olhash_cuda_miner_kernel.h"
 
 #include <libdevcore/Worker.h>
 #include <libethcore/EthashAux.h>
@@ -39,7 +39,6 @@ public:
     static void enumDevices(std::map<string, DeviceDescriptor>& _DevicesCollection);
 
     void search(
-      uint8_t const* header,
       const bytes& work,
       const bytes& miner_key,
       const bytes& merkle_root,
@@ -67,7 +66,7 @@ private:
     const uint32_t m_batch_size;
     const uint32_t m_streams_batch_size;
 
-    uint64_t m_allocated_memory_dag = 0; // dag_size is a uint64_t in EpochContext struct
+    uint64_t m_allocated_memory_dag = 0;
     size_t m_allocated_memory_light_cache = 0;
 };
 
