@@ -16,30 +16,23 @@
 
 #include "dagger_shuffled.cuh"
 
-__global__ void ethash_search(volatile Search_results* g_output, uint64_t start_nonce)
+__global__ void olhash_search(volatile Search_results* g_output, uint64_t start_nonce)
 {
     uint32_t const gid = blockIdx.x * blockDim.x + threadIdx.x;
-    uint2 mix[4];
-    if (compute_hash(start_nonce + gid, mix))
+    uint64_t distance;
+    if (compute_distance(start_nonce + gid, &distance))
         return;
     uint32_t index = atomicInc((uint32_t*)&g_output->count, 0xffffffff);
     if (index >= MAX_SEARCH_RESULTS)
         return;
     g_output->result[index].gid = gid;
-    g_output->result[index].mix[0] = mix[0].x;
-    g_output->result[index].mix[1] = mix[0].y;
-    g_output->result[index].mix[2] = mix[1].x;
-    g_output->result[index].mix[3] = mix[1].y;
-    g_output->result[index].mix[4] = mix[2].x;
-    g_output->result[index].mix[5] = mix[2].y;
-    g_output->result[index].mix[6] = mix[3].x;
-    g_output->result[index].mix[7] = mix[3].y;
+    g_output->result[index].distance = distance;
 }
 
-void run_ethash_search(uint32_t gridSize, uint32_t blockSize, cudaStream_t stream,
-    volatile Search_results* g_output, uint64_t start_nonce)
+void run_olhash_search(uint32_t gridSize, uint32_t blockSize, cudaStream_t stream,
+                       volatile Search_results* g_output, uint64_t start_nonce)
 {
-    ethash_search<<<gridSize, blockSize, 0, stream>>>(g_output, start_nonce);
+    olhash_search<<<gridSize, blockSize, 0, stream>>>(g_output, start_nonce);
     CUDA_SAFE_CALL(cudaGetLastError());
 }
 
