@@ -279,11 +279,10 @@ void CUDAMiner::search(
     bytes btimestamp(timestamp.begin(), timestamp.end());
     set_common_data(work, miner_key, merkle_root, btimestamp);
 
-    auto tweaked_diff = uint64_t(1.01666*difficulty);
     if (m_current_target != difficulty)
     {
-        set_target(tweaked_diff);
-        m_current_target = tweaked_diff;
+        set_target(difficulty);
+        m_current_target = difficulty;
     }
 
     // prime each stream, clear search result buffers and start the search

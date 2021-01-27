@@ -1,5 +1,5 @@
 # !!!!DO NOT PUSH/PUBLISH - MAY EXPOSE PRIVATE GIT CREDENTIALS!!!!
-FROM debian:stable-slim
+FROM nvidia/cuda:11.1.1-devel-ubuntu18.04
 
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update
@@ -15,12 +15,12 @@ COPY ./ /usr/src/olminer
 
 WORKDIR /usr/src/olminer
 RUN git submodule update --init --recursive
-RUN rm -rf ./build ; mkdir -p ./build && cd ./build && cmake -DOLHASHCUDA=OFF -DCMAKE_BUILD_TYPE=Release -DHUNTER_JOBS_NUMBER=$(nproc) .. && make install
+RUN rm -rf ./build ; mkdir -p ./build && cd ./build && cmake -DOLHASHCUDA=ON -DCMAKE_BUILD_TYPE=Release -DHUNTER_JOBS_NUMBER=$(nproc) .. && make install
 
-FROM debian:stable-slim
+FROM nvidia/cuda:11.1.1-base-ubuntu18.04
 RUN mkdir -p /home/bc
 WORKDIR /home/bc
 COPY --from=0 /usr/local/bin/olminer /home/bc
 USER 1001
-CMD ["sh", "-c", "/home/bc/olminer --cpu -P ${STRATUM_URL}"]
+CMD ["sh", "-c", "/home/bc/olminer --${MINER_TYPE} -P ${STRATUM_URL}"]
 
