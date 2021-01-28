@@ -33,7 +33,7 @@
 ## Install
 
 1. clone this repository
-2. make sure you have docker installed
+2. make sure you have [docker](https://docs.docker.com/get-docker/) installed
 3. build
     * if you are on linux follow the instructions in `docker.olminer/README`
     * if you are on windows that docker file is on the way :-)
