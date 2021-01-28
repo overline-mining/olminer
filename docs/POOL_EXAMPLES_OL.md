@@ -20,9 +20,9 @@ An URI is formed like this
 
 ```
                                    Authority
-            +---------------------------------------------------------------------+
-  stratum://0x123456789012345678901234567890.Worker:password@eu1.ethermine.org:4444
-  +------+  +----------------------------------------------+ +---------------+ +--+
+            +-------------------------------------------------------------------+
+  stratum://0x123456789012345678901234567890.Worker:password@waietng-pool.us:3141
+  +------+  +----------------------------------------------+ +-------------+ +--+
       |                         |                                  |             |
       |                         |                                  |             + > Port
       |                         |                                  + ------------- > Host
@@ -35,10 +35,10 @@ Optionally you can append to the above notation anything which might be useful i
 Example
 
 ```
-stratum://0x123456789012345678901234567890.Worker:password@eu1.ethermine.org:4444/something/else
-                                                                                 +--------------+
-                                                                                         |
-                                                                    Path --------------- +
+stratum://0x123456789012345678901234567890.Worker:password@waietng-pool.us:3141/something/else
+                                                                               +-------------+
+                                                                                      |
+                                                                    Path ------------ +
 ```
 
 **Anything you put in the `Path` part must be Url Encoded thus, for example, `@` must be written as `%40`**
