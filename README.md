@@ -9,11 +9,11 @@
 ## Features
 
 * CPU Mining
-* Nvidia CUDA mining in development
+* Nvidia CUDA mining
 * OpenCL mining (not yet there)
-* realistic benchmarking against arbitrary epoch/DAG/blocknumber
+* realistic benchmarking against arbitrary blocks (to be done)
 * stratum mining without proxy
-* OpenCL devices picking (nope)
+* OpenCL devices picking (to do, but shouldn't be difficult)
 * farm failover (getwork + stratum)
 
 
@@ -32,18 +32,14 @@
 
 ## Install
 
-[![Releases](https://img.shields.io/github/downloads/lgray/olminer/total.svg)][Releases]
-
-Standalone **executables** for *Linux*, *macOS* and *Windows* are provided in
-the [Releases] section.
-Download an archive for your operating system and unpack the content to a place
-accessible from command line. The olminer is ready to go.
-
-| Builds | Release | Date |
-| ------ | ------- | ---- |
-| Last   | [![GitHub release](https://img.shields.io/github/release/trick77/olminer/all.svg)](https://github.com/trick77/olminer/releases) | [![GitHub Release Date](https://img.shields.io/github/release-date-pre/trick77/olminer.svg)](https://github.com/trick77/olminer/releases) |
-| Stable | [![GitHub release](https://img.shields.io/github/release/trick77/olminer.svg)](https://github.com/trick77/olminer/releases/latest) | [![GitHub Release Date](https://img.shields.io/github/release-date/trick77/olminer.svg)](https://github.com/trick77/olminer/releases/latest) |
-
+1) clone this repository
+2) make sure you have docker installed
+3) build
+  a) if you are on linux follow the instructions in docker.olminer/README
+  b) if you are on windows that docker file is on the way :-)
+4) copy the executable out of the docker container
+  a) docker create -ti --name dummy olminer bash && sudo docker cp dummy:/home/bc/olminer /usr/local/bin ; docker rm -f dummy
+5) If you want to mine with a GPU make sure you have [CUDA 11](https://docs.nvidia.com/deploy/cuda-compatibility/index.html#support-hardware) compatible drivers installed.
 
 ## Usage
 

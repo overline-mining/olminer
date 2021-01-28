@@ -20,7 +20,7 @@ HunterGate(
 )
 
 project(olminer)
-set(PROJECT_VERSION 0.0.1)
+set(PROJECT_VERSION 0.20.0-rc.0)
 
 cable_set_build_type(DEFAULT Release CONFIGURATION_TYPES Release RelWithDebInfo)
 
