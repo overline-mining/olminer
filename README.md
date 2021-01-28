@@ -1,6 +1,6 @@
 # olminer
 
-[![Releases](https://img.shields.io/github/downloads/trick77/olminer/total.svg)][Releases]
+[![Releases](https://img.shields.io/github/downloads/overline-mining/olminer/total.svg)][Releases]
 
 > Overline miner with CUDA (eventually OpenCL) and stratum support
 
@@ -74,7 +74,7 @@ See [docs/BUILD.md](docs/BUILD.md) for build/compilation details.
 
 ## Maintainers & Authors
 
-[![Gitter](https://img.shields.io/gitter/room/trick77/olminer.svg)][Gitter]
+[![Gitter](https://img.shields.io/gitter/room/overline-mining/olminer.svg)][Gitter]
 
 The list of current and past maintainers, authors and contributors to the olminer project.
 Ordered alphabetically. [Contributors statistics since 2015-08-20].
@@ -86,7 +86,7 @@ Ordered alphabetically. [Contributors statistics since 2015-08-20].
 
 ## Contribute
 
-[![Gitter](https://img.shields.io/gitter/room/trick77/olminer.svg)][Gitter]
+[![Gitter](https://img.shields.io/gitter/room/overline-mining/olminer.svg)][Gitter]
 
 To meet the community, ask general questions and chat about olminer join [the olminer channel on Gitter][Gitter].
 
@@ -166,6 +166,6 @@ You have to upgrade your Nvidia drivers. On Linux, install `nvidia-396` package 
 
 
 [Amazon S3 is needed]: https://docs.travis-ci.com/user/uploading-artifacts/
-[Contributors statistics since 2015-08-20]: https://github.com/trick77/olminer/graphs/contributors?from=2015-08-20
-[Gitter]: https://gitter.im/trick77/olminer
-[Releases]: https://github.com/trick77/olminer
+[Contributors statistics since 2015-08-20]: https://github.com/overline-mining/olminer/graphs/contributors?from=2015-08-20
+[Gitter]: https://gitter.im/overline-mining/olminer
+[Releases]: https://github.com/overline-mining/olminer
