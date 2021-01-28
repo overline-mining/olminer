@@ -1,12 +1,10 @@
 # olminer
 
-[![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg)](https://github.com/RichardLitt/standard-readme)
-[![Gitter](https://img.shields.io/gitter/room/nwjs/nw.js.svg)][Gitter]
-[![Releases](https://img.shields.io/github/downloads/lgray/olminer/total.svg)][Releases]
+[![Releases](https://img.shields.io/github/downloads/trick77/olminer/total.svg)][Releases]
 
 > Overline miner with CUDA (eventually OpenCL) and stratum support
 
-**Olminer** is an olhash CPU and GPU mining worker: with olminer you can mine overline proof of distance compliant blockchain, so for now, only Overline. This is the actively maintained version of olminer. It originates from the [ethminer] project and adapts its framework to Overline's unique proof of work system. See [FAQ](#faq) for more details.
+**Olminer** is an olhash CPU and GPU mining worker: with olminer you can mine overline proof of distance compliant blockchain, so for now, only Overline. This is the actively maintained version of olminer. It originates from the [ethminer](https://github.com/ethereum-mining/ethminer) project and adapts its framework to Overline's proof of work system. See [FAQ](#faq) for more details. Many thanks to the ethminer devs since without their code this would not exist.
 
 ## Features
 
@@ -15,7 +13,7 @@
 * OpenCL mining (not yet there)
 * realistic benchmarking against arbitrary epoch/DAG/blocknumber
 * stratum mining without proxy
-* OpenCL devices picking
+* OpenCL devices picking (nope)
 * farm failover (getwork + stratum)
 
 
@@ -39,28 +37,28 @@
 Standalone **executables** for *Linux*, *macOS* and *Windows* are provided in
 the [Releases] section.
 Download an archive for your operating system and unpack the content to a place
-accessible from command line. The ethminer is ready to go.
+accessible from command line. The olminer is ready to go.
 
 | Builds | Release | Date |
 | ------ | ------- | ---- |
-| Last   | [![GitHub release](https://img.shields.io/github/release/ethereum-mining/ethminer/all.svg)](https://github.com/ethereum-mining/ethminer/releases) | [![GitHub Release Date](https://img.shields.io/github/release-date-pre/ethereum-mining/ethminer.svg)](https://github.com/ethereum-mining/ethminer/releases) |
-| Stable | [![GitHub release](https://img.shields.io/github/release/ethereum-mining/ethminer.svg)](https://github.com/ethereum-mining/ethminer/releases/latest) | [![GitHub Release Date](https://img.shields.io/github/release-date/ethereum-mining/ethminer.svg)](https://github.com/ethereum-mining/ethminer/releases/latest) |
+| Last   | [![GitHub release](https://img.shields.io/github/release/trick77/olminer/all.svg)](https://github.com/trick77/olminer/releases) | [![GitHub Release Date](https://img.shields.io/github/release-date-pre/trick77/olminer.svg)](https://github.com/trick77/olminer/releases) |
+| Stable | [![GitHub release](https://img.shields.io/github/release/trick77/olminer.svg)](https://github.com/trick77/olminer/releases/latest) | [![GitHub Release Date](https://img.shields.io/github/release-date/trick77/olminer.svg)](https://github.com/trick77/olminer/releases/latest) |
 
 
 ## Usage
 
-The **ethminer** is a command line program. This means you launch it either
+The **olminer** is a command line program. This means you launch it either
 from a Windows command prompt or Linux console, or create shortcuts to
 predefined command lines using a Linux Bash script or Windows batch/cmd file.
 For a full list of available command, please run:
 
 ```sh
-ethminer --help
+olminer --help
 ```
 
 ### Examples connecting to pools
 
-Check our [samples](docs/POOL_EXAMPLES_ETH.md) to see how to connect to different pools.
+Check our [samples](docs/POOL_EXAMPLES_OL.md) to see how to connect to different pools.
 
 ## Build
 
@@ -68,10 +66,7 @@ Check our [samples](docs/POOL_EXAMPLES_ETH.md) to see how to connect to differen
 
 | CI            | OS            | Status  | Development builds |
 | ------------- | ------------- | -----   | -----------------  |
-| [Travis CI]   | Linux, macOS  | [![Travis CI](https://img.shields.io/travis/ethereum-mining/ethminer/master.svg)][Travis CI]    | ✗ No build artifacts, [Amazon S3 is needed] for this |
-| [AppVeyor]    | Windows       | [![AppVeyor](https://img.shields.io/appveyor/ci/ethereum-mining/ethminer/master.svg)][AppVeyor] | ✓ Build artifacts available for all PRs and branches |
 
-The AppVeyor system automatically builds a Windows .exe for every commit. The latest version is always available [on the landing page](https://ci.appveyor.com/project/ethereum-mining/ethminer) or you can [browse the history](https://ci.appveyor.com/project/ethereum-mining/ethminer/history) to access previous builds.
 
 To download the .exe on a build under `Job name` select the CUDA version you use, choose `Artifacts` then download the zip file.
 
@@ -81,28 +76,21 @@ See [docs/BUILD.md](docs/BUILD.md) for build/compilation details.
 
 ## Maintainers & Authors
 
-[![Gitter](https://img.shields.io/gitter/room/ethereum-mining/ethminer.svg)][Gitter]
+[![Gitter](https://img.shields.io/gitter/room/trick77/olminer.svg)][Gitter]
 
-The list of current and past maintainers, authors and contributors to the ethminer project.
+The list of current and past maintainers, authors and contributors to the olminer project.
 Ordered alphabetically. [Contributors statistics since 2015-08-20].
 
 | Name                  | Contact                                                      |     |
 | --------------------- | ------------------------------------------------------------ | --- |
-| Andrea Lanfranchi     | [@AndreaLanfranchi](https://github.com/AndreaLanfranchi)     | ETH: 0xa7e593bde6b5900262cf94e4d75fb040f7ff4727 |
-| EoD                   | [@EoD](https://github.com/EoD)                               |     |
-| Genoil                | [@Genoil](https://github.com/Genoil)                         |     |
-| goobur                | [@goobur](https://github.com/goobur)                         |     |
-| Marius van der Wijden | [@MariusVanDerWijden](https://github.com/MariusVanDerWijden) |     |
-| Paweł Bylica          | [@chfast](https://github.com/chfast)                         |     |
-| Philipp Andreas       | [@smurfy](https://github.com/smurfy)                         |     |
-| Stefan Oberhumer      | [@StefanOberhumer](https://github.com/StefanOberhumer)       |     |
+| LG      | [@lgray](https://github.com/lgray)       |     |
 
 
 ## Contribute
 
-[![Gitter](https://img.shields.io/gitter/room/ethereum-mining/ethminer.svg)][Gitter]
+[![Gitter](https://img.shields.io/gitter/room/trick77/olminer.svg)][Gitter]
 
-To meet the community, ask general questions and chat about ethminer join [the ethminer channel on Gitter][Gitter].
+To meet the community, ask general questions and chat about olminer join [the olminer channel on Gitter][Gitter].
 
 All bug reports, pull requests and code reviews are very much welcome.
 
@@ -116,24 +104,24 @@ Licensed under the [GNU General Public License, Version 3](LICENSE).
 
 ### Why is my hashrate with Nvidia cards on Windows 10 so low?
 
-The new WDDM 2.x driver on Windows 10 uses a different way of addressing the GPU. This is good for a lot of things, but not for ETH mining.
+The new WDDM 2.x driver on Windows 10 uses a different way of addressing the GPU. This is good for a lot of things, but not for OL mining.
 
 * For Kepler GPUs: I actually don't know. Please let me know what works best for good old Kepler.
-* For Maxwell 1 GPUs: Unfortunately the issue is a bit more serious on the GTX750Ti, already causing suboptimal performance on Win7 and Linux. Apparently about 4MH/s can still be reached on Linux, which, depending on ETH price, could still be profitable, considering the relatively low power draw.
-* For Maxwell 2 GPUs: There is a way of mining ETH at Win7/8/Linux speeds on Win10, by downgrading the GPU driver to a Win7 one (350.12 recommended) and using a build that was created using CUDA 6.5.
+* For Maxwell 1 GPUs: Unfortunately the issue is a bit more serious on the GTX750Ti, already causing suboptimal performance on Win7 and Linux. Apparently about 4MH/s can still be reached on Linux, which, depending on OL price, could still be profitable, considering the relatively low power draw.
+* For Maxwell 2 GPUs: There is a way of mining OL at Win7/8/Linux speeds on Win10, by downgrading the GPU driver to a Win7 one (350.12 recommended) and using a build that was created using CUDA 6.5.
 * For Pascal GPUs: You have to use the latest WDDM 2.1 compatible drivers in combination with Windows 10 Anniversary edition in order to get the full potential of your Pascal GPU.
 
 ### Why is a GTX 1080 slower than a GTX 1070?
 
-Because of the GDDR5X memory, which can't be fully utilized for ETH mining (yet).
+Because of the GDDR5X memory, which can't be fully utilized for OL mining (yet).
 
 ### Are AMD cards also affected by slowdowns with increasing DAG size?
 
 Only GCN 1.0 GPUs (78x0, 79x0, 270, 280), but in a different way. You'll see that on each new epoch (30K blocks), the hashrate will go down a little bit.
 
-### Can I still mine ETH with my 4GB GPU?
+### Can I still mine OL with my 4GB GPU?
 
-Not really, your VRAM must be above the DAG size (Currently about 4.023 GB.) to get best performance. Without it severe hash loss will occur.
+LOL, yes.
 
 ### What are the optimal launch parameters?
 
@@ -143,13 +131,13 @@ The default parameters are fine in most scenario's (CUDA). For OpenCL it varies 
 
 [@davilizh](https://github.com/davilizh) made improvements to the CUDA kernel hashing process and added this flag to allow changing the number of tasks it runs in parallel. These improvements were optimised for GTX 1060 GPUs which saw a large increase in hashrate, GTX 1070 and GTX 1080/Ti GPUs saw some, but less, improvement. The default value is 4 (which does not need to be set with the flag) and in most cases this will provide the best performance.
 
-### What is ethminer's relationship with [Genoil's fork]?
+### What is olminer's relationship with [Genoil's fork]?
 
 [Genoil's fork] was the original source of this version, but as Genoil is no longer consistently maintaining that fork it became almost impossible for developers to get new code merged there. In the interests of progressing development without waiting for reviews this fork should be considered the active one and Genoil's as legacy code.
 
 ### Can I CPU Mine?
 
-No, use geth, the go program made for ethereum by ethereum.
+Yes --cpu.
 
 ### CUDA GPU order changes sometimes. What can I do?
 
@@ -164,11 +152,11 @@ This can be done with one of the 2 ways:
 
 * Linux:
     * Adapt the `/etc/environment` file and add a line `CUDA_DEVICE_ORDER=PCI_BUS_ID`
-    * Adapt your start script launching ethminer and add a line `export CUDA_DEVICE_ORDER=PCI_BUS_ID`
+    * Adapt your start script launching olminer and add a line `export CUDA_DEVICE_ORDER=PCI_BUS_ID`
 
 * Windows:
     * Adapt your environment using the control panel (just search `setting environment windows control panel` using your favorite search engine)
-    * Adapt your start (.bat) file launching ethminer and add a line `set CUDA_DEVICE_ORDER=PCI_BUS_ID` or `setx CUDA_DEVICE_ORDER PCI_BUS_ID`. For more info about `set` see [here](https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/set_1), for more info about `setx` see [here](https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/setx)
+    * Adapt your start (.bat) file launching olminer and add a line `set CUDA_DEVICE_ORDER=PCI_BUS_ID` or `setx CUDA_DEVICE_ORDER PCI_BUS_ID`. For more info about `set` see [here](https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/set_1), for more info about `setx` see [here](https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/setx)
 
 ### Insufficient CUDA driver
 
@@ -180,10 +168,6 @@ You have to upgrade your Nvidia drivers. On Linux, install `nvidia-396` package 
 
 
 [Amazon S3 is needed]: https://docs.travis-ci.com/user/uploading-artifacts/
-[AppVeyor]: https://ci.appveyor.com/project/ethereum-mining/ethminer
-[cpp-ethereum]: https://github.com/ethereum/cpp-ethereum
-[Contributors statistics since 2015-08-20]: https://github.com/ethereum-mining/ethminer/graphs/contributors?from=2015-08-20
-[Genoil's fork]: https://github.com/Genoil/cpp-ethereum
-[Gitter]: https://gitter.im/ethereum-mining/ethminer
-[Releases]: https://github.com/ethereum-mining/ethminer/releases
-[Travis CI]: https://travis-ci.org/ethereum-mining/ethminer
+[Contributors statistics since 2015-08-20]: https://github.com/trick77/olminer/graphs/contributors?from=2015-08-20
+[Gitter]: https://gitter.im/trick77/olminer
+[Releases]: https://github.com/trick77/olminer
