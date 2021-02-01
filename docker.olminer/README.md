@@ -5,7 +5,7 @@ You will need to have docker and git installed on your operating system and acce
 
 You will need to have windows 10 for the windows build process and executables to function.
 
-### If you need ask in https://t.me/overlineadvanced - do not email code authors directly.
+### If you need help ask in https://t.me/overlineadvanced - do not email code authors directly.
 
 ## Build
 
