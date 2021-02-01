@@ -31,7 +31,7 @@ If don't want to all CPU threads available to the miner use something like ```do
 
 To kill the miner type ```docker rm -f olminer-cpu```
 
-## Run CUDA miner natively (easier to setup harder to manage)
+## Run CUDA GPU miner natively (easier to setup harder to manage)
 
 On either linux or windows you will need to have CUDA 11.1 compatible drivers installed for this to function.
 On windows you will additionally need to install the [runtimes for MS Visual Studio 2019](https://aka.ms/vs/16/release/VC_redist.x64.exe).
