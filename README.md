@@ -6,6 +6,8 @@
 
 **Olminer** is an olhash CPU and GPU mining worker: with olminer you can mine overline proof of distance compliant blockchain, so for now, only Overline. This is the actively maintained version of olminer. It originates from the [ethminer](https://github.com/ethereum-mining/ethminer) project and adapts its framework to Overline's proof of work system. See [FAQ](#faq) for more details. Many thanks to the ethminer devs since without their code this would not exist.
 
+### If you need ask in https://t.me/overlineadvanced - do not email code authors directly.
+
 ## Features
 
 * CPU Mining
