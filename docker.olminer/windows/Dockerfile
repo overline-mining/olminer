@@ -24,8 +24,6 @@ FROM mcr.microsoft.com/windows/servercore:2004
 
 RUN @"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command " [System.Net.ServicePointManager]::SecurityProtocol = 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"
 RUN choco install -y vcredist140
-#RUN net user /add olminer
-#USER olminer
 
 RUN mkdir C:\olminer
 
@@ -34,6 +32,9 @@ ARG tgt="C:\olminer\"
 COPY --from=0 $src $tgt
 
 RUN netsh interface ip set dns name="Ethernet" static 8.8.8.8
+
+#RUN net user /add olminer
+#USER olminer
 
 WORKDIR "C:\olminer\"
  
