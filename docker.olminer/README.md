@@ -3,6 +3,8 @@
 This will build a CPU miner binary optimized for the CPU found on the system.
 You will need to have docker and git installed on your operating system and accessible by command line for this build process to work.
 
+You will need to have windows 10 for the windows build process and executables to function.
+
 ## Build
 
 ```bash
