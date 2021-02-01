@@ -14,12 +14,9 @@ on:
     - cron:  '1 0 * * *'
 
 jobs:
-  build:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest] # , macos-latest, windows-latest
-    name: build olminer (${{ matrix.os }})
+  build-linux:
+    runs-on: ubuntu-latest
+    name: build olminer (ubuntu-latest)
 
     steps:
     - uses: actions/checkout@master
@@ -27,17 +24,50 @@ jobs:
         submodules: True
     - name: get cmake 3.19.2
       uses: lukka/get-cmake@v3.19.2
+    - name: install cuda
+      run: apt install -y cuda-nvcc-11-0 cuda-nvrtc-11-0 cuda-minimal-build-11-0
     - name: build olminer
       run: |
         mkdir -p build
         pushd build
-        cmake -DOLHASHCUDA=OFF ..
+        cmake -DOLHASHCUDA=ON ..
         cmake --build . --config Release --target package
         popd
     - name: export artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: olminer-executables-${{ matrix.os }}
+        name: olminer-executables-ubuntu-latest
+        retention-days: 5
+        path: build/olminer.*
+
+  build-windows:
+    runs-on: windows-latest
+    name: build olminer (windows-latest)
+
+    steps:
+    - uses: actions/checkout@master
+      with:
+        submodules: True
+    - name: get cmake 3.19.2
+      uses: lukka/get-cmake@v3.19.2
+    - name: install cuda
+      run: |
+        curl.exe -L http://developer.download.nvidia.com/compute/cuda/11.1.1/local_installers/cuda_11.1.1_456.81_win10.exe --output cuda.exe
+        7z x cuda.exe -o"cuda"
+        Start-Process -FilePath '.\cuda\setup.exe' -ArgumentList '-s nvcc_11.1.1 cudart_11.1.1' -Wait -NoNewWindow
+        Remove-Item –path cuda –recurse 
+        Remove-Item cuda.exe
+    - name: build olminer
+      run: |        
+        mkdir -p build
+        pushd build
+        cmake -DOLHASHCUDA=ON ..
+        cmake --build . --config Release --target package
+        popd
+    - name: export artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: olminer-executables-windows-latest
         retention-days: 5
         path: build/olminer.*
   
