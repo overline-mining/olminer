@@ -4,7 +4,21 @@ This will build a CPU miner binary optimized for the CPU found on the system.
 
 ## Build
 
-```docker build -t olminer -f ./docker.olminer/Dockerfile .```
+```bash
+git clone https://github.com/overline-mining/olminer.git
+cd olminer
+docker build -t olminer -f ./docker.olminer/<your OS>/Dockerfile .
+```
+
+### NOTE: In order to build olminer on windows you will:
+  1. Need approximately 40GB of disk space for the build image. Microsoft loves cumbersome build tools.
+  2. Need to be running docker desktop in [windows container mode](https://markheath.net/posts/2019/docker-desktop-windows-and-linux-1.png)
+
+You can recover the used space afterwards by doing:
+  ```bash
+  docker image prune
+  docker rmi mcr.microsoft.com/windows:2004 mcr.microsoft.com/windows/servercore:2004
+  ```
 
 ## Run CPU miner inside Docker
 
