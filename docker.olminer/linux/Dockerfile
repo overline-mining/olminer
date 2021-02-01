@@ -1,4 +1,3 @@
-# !!!!DO NOT PUSH/PUBLISH - MAY EXPOSE PRIVATE GIT CREDENTIALS!!!!
 FROM nvidia/cuda:11.1.1-devel-ubuntu18.04
 
 ENV DEBIAN_FRONTEND noninteractive
@@ -9,9 +8,7 @@ RUN apt-get install -y --no-install-recommends \
     cmake \
     git
 
-# TODO: pull from git repo once public
-RUN mkdir -p /usr/src/olminer
-COPY ./ /usr/src/olminer
+RUN git clone https://github.com/overline-mining/olminer /usr/src/olminer
 
 WORKDIR /usr/src/olminer
 RUN git submodule update --init --recursive
