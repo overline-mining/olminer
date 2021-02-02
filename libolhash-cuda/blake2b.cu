@@ -110,7 +110,7 @@ static void G(const int r, const int i, u64 &a, u64 &b, u64 &c, u64 &d, u64 cons
 
 __device__ void blake2b_compress_cu(blake2b_state *S, const uint8_t block[BLAKE2B_BLOCKBYTES]) {
     
-  u64 *d_data = (u64 *)S->buf;
+  u64 *d_data = (u64 *)block;
   u64 m[16];
 
   m[0] = d_data[0];
@@ -176,6 +176,18 @@ __device__ __forceinline__ void blake2b_increment_counter_cu( blake2b_state *S, 
 {
   S->t[0] += inc;
   S->t[1] += ( S->t[0] < inc );
+}
+
+__device__ int blake2b_update_cu_short( blake2b_state *S, const void *pin, size_t inlen ) {
+  const unsigned char * in = (const unsigned char *)pin;
+  if( inlen > 0 )
+  {
+    size_t left = S->buflen;
+    size_t fill = BLAKE2B_BLOCKBYTES - left;
+    memcpy( S->buf + S->buflen, in, inlen );
+    S->buflen += inlen;
+  }
+  return 0;
 }
 
 __device__ int blake2b_update_cu( blake2b_state *S, const void *pin, size_t inlen )
