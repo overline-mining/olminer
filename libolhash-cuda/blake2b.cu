@@ -20,29 +20,19 @@ __constant__ uint64_t blake2b_IV[8] =
   0x510e527fade682d1ULL, 0x9b05688c2b3e6c1fULL,
   0x1f83d9abfb41bd6bULL, 0x5be0cd19137e2179ULL
 };
-
-__constant__ uint8_t blake2b_default_param[64] =
-{
-  BLAKE2B_OUTBYTES, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-};
   
 __device__ __forceinline__ int blake2b_init_param_cu( blake2b_state *S )
-{  
-  const uint64_t * p = ( const uint64_t *) blake2b_default_param;
-
+{
   memset( S, 0, sizeof( blake2b_state ) );
-
-  S->h[0] = blake2b_IV[0] ^ p[0];
-  S->h[1] = blake2b_IV[1] ^ p[1];
-  S->h[2] = blake2b_IV[2] ^ p[2];
-  S->h[3] = blake2b_IV[3] ^ p[3];
-  S->h[4] = blake2b_IV[4] ^ p[4];
-  S->h[5] = blake2b_IV[5] ^ p[5];
-  S->h[6] = blake2b_IV[6] ^ p[6];
-  S->h[7] = blake2b_IV[7] ^ p[7];
+    
+  S->h[0] = blake2b_IV[0] ^ 0x1010040ULL;
+  S->h[1] = blake2b_IV[1];
+  S->h[2] = blake2b_IV[2];
+  S->h[3] = blake2b_IV[3];
+  S->h[4] = blake2b_IV[4];
+  S->h[5] = blake2b_IV[5];
+  S->h[6] = blake2b_IV[6];
+  S->h[7] = blake2b_IV[7];
 
   return 0;
 }
@@ -102,7 +92,7 @@ static void G(const int r, const int i, u64 &a, u64 &b, u64 &c, u64 &d, u64 cons
   G(r, 6, v[2], v[7], v[ 8], v[13], m); \
   G(r, 7, v[3], v[4], v[ 9], v[14], m);
 
-__device__ void blake2b_compress_cu(blake2b_state *S, const uint8_t block[BLAKE2B_BLOCKBYTES]) {
+__device__ __forceinline__ void blake2b_compress_cu(blake2b_state *S, const uint8_t block[BLAKE2B_BLOCKBYTES]) {
     
   u64 *d_data = (u64 *)block;
   u64 m[16];
@@ -172,32 +162,28 @@ __device__ __forceinline__ void blake2b_increment_counter_cu( blake2b_state *S, 
   S->t[1] += ( S->t[0] < inc );
 }
 
+__device__ int blake2b_update_cu_short( blake2b_state *S, const void *pin, size_t inlen )
+{
+  const unsigned char * in = (const unsigned char *)pin;
+  memcpy( S->buf, in, inlen );
+  S->buflen += inlen;
+  return 0;
+}
+  
 __device__ int blake2b_update_cu( blake2b_state *S, const void *pin, size_t inlen )
 {
   const unsigned char * in = (const unsigned char *)pin;
-  //if( inlen > 0 )
-  //{
-    //size_t left = S->buflen;
-    //size_t fill = BLAKE2B_BLOCKBYTES; // - left;
-    if( inlen > BLAKE2B_BLOCKBYTES )
-    {
-      S->buflen = 0;
-      memcpy( S->buf /*+ left*/, in, BLAKE2B_BLOCKBYTES ); /* Fill buffer */
-      blake2b_increment_counter_cu( S, BLAKE2B_BLOCKBYTES );
-      blake2b_compress_cu( S, S->buf ); /* Compress */
-      in += BLAKE2B_BLOCKBYTES; inlen -= BLAKE2B_BLOCKBYTES;
-      #pragma unroll
-      for(unsigned i = 0; inlen > BLAKE2B_BLOCKBYTES && i < 2; ++i) {
-      //while(inlen > BLAKE2B_BLOCKBYTES) {
-        blake2b_increment_counter_cu(S, BLAKE2B_BLOCKBYTES);
-        blake2b_compress_cu( S, in );
-        in += BLAKE2B_BLOCKBYTES;
-        inlen -= BLAKE2B_BLOCKBYTES;
-      }
-    }
-    memcpy( S->buf + S->buflen, in, inlen );
-    S->buflen += inlen;
-  //}
+
+  // either the input is < 64 bytes or ~256 bytes no need for loop
+  S->buflen = 0;
+  memcpy( S->buf, in, BLAKE2B_BLOCKBYTES ); /* Fill buffer */
+  blake2b_increment_counter_cu( S, BLAKE2B_BLOCKBYTES );
+  blake2b_compress_cu( S, S->buf ); /* Compress */
+  in += BLAKE2B_BLOCKBYTES; inlen -= BLAKE2B_BLOCKBYTES;
+
+  memcpy( S->buf, in, inlen );
+  S->buflen += inlen;
+  
   return 0;
 }
 

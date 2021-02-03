@@ -51,12 +51,12 @@ DEV_INLINE bool compute_distance(uint64_t nonce, uint64_t* distance) {
   work_string[0] = '0';
   uint8_t length = 0;
   uint64_t reduced_nonce = nonce;
-  while(reduced_nonce > 0) {
+  for( uint8_t i = 0; reduced_nonce > 0 && i < 20; ++i ) {
     ++length;
     reduced_nonce /= 10ULL;
   }
   reduced_nonce = nonce;
-  for(uint64_t j = length; j > 1; --j) {
+  for(uint8_t j = length; j > 1; --j) {
     work_string[j - 1] = d_num_to_code[reduced_nonce % 10];
     reduced_nonce /= 10ULL;
   }
@@ -67,7 +67,7 @@ DEV_INLINE bool compute_distance(uint64_t nonce, uint64_t* distance) {
   // reuse the work_string to hold the hash
   blake2b_state ns;
   blake2b_init_cu(&ns, BLAKE2B_OUTBYTES);
-  blake2b_update_cu(&ns, work_string, length);
+  blake2b_update_cu_short(&ns, work_string, length);
   blake2b_final_cu(&ns, work_string, BLAKE2B_OUTBYTES);
 
   // "blake2b" and stringify the nonce hash
