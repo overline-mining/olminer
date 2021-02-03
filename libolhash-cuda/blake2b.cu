@@ -21,40 +21,34 @@ __constant__ uint64_t blake2b_IV[8] =
   0x1f83d9abfb41bd6bULL, 0x5be0cd19137e2179ULL
 };
 
-__device__ int blake2b_init_param_cu( blake2b_state *S,
-                                      const blake2b_param *P )
+__constant__ uint8_t blake2b_default_param[64] =
+{
+  BLAKE2B_OUTBYTES, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+};
+  
+__device__ __forceinline__ int blake2b_init_param_cu( blake2b_state *S )
 {  
-  size_t i;
-  /*blake2b_init0( S ); */
-  const unsigned char * v = ( const unsigned char * )( blake2b_IV );
-  const unsigned char * p = ( const unsigned char * )( P );
-  unsigned char * h = ( unsigned char * )( S->h );
-  /* IV XOR ParamBlock */
+  const uint64_t * p = ( const uint64_t *) blake2b_default_param;
+
   memset( S, 0, sizeof( blake2b_state ) );
 
-  for( i = 0; i < BLAKE2B_OUTBYTES; ++i ) h[i] = v[i] ^ p[i];
+  S->h[0] = blake2b_IV[0] ^ p[0];
+  S->h[1] = blake2b_IV[1] ^ p[1];
+  S->h[2] = blake2b_IV[2] ^ p[2];
+  S->h[3] = blake2b_IV[3] ^ p[3];
+  S->h[4] = blake2b_IV[4] ^ p[4];
+  S->h[5] = blake2b_IV[5] ^ p[5];
+  S->h[6] = blake2b_IV[6] ^ p[6];
+  S->h[7] = blake2b_IV[7] ^ p[7];
 
-  S->outlen = P->digest_length;
   return 0;
 }
 
-__device__ int blake2b_init_cu(blake2b_state *S, size_t outlen) {
-  blake2b_param P[1];
-  
-  P->digest_length = (uint8_t)outlen;
-  P->key_length    = 0;
-  P->fanout        = 1;
-  P->depth         = 1;
-  P->leaf_length   = 0;
-  P->node_offset   = 0;
-  P->xof_length    = 0;
-  P->node_depth    = 0;
-  P->inner_length  = 0;
-  memset( P->reserved, 0, sizeof( P->reserved ) );
-  memset( P->salt,     0, sizeof( P->salt ) );
-  memset( P->personal, 0, sizeof( P->personal ) );
-
-  return blake2b_init_param_cu( S, P );
+__device__ __forceinline__ int blake2b_init_cu(blake2b_state *S, size_t outlen) {
+  return blake2b_init_param_cu( S );
 }
 
 // blake2b update
@@ -178,33 +172,23 @@ __device__ __forceinline__ void blake2b_increment_counter_cu( blake2b_state *S, 
   S->t[1] += ( S->t[0] < inc );
 }
 
-__device__ int blake2b_update_cu_short( blake2b_state *S, const void *pin, size_t inlen ) {
-  const unsigned char * in = (const unsigned char *)pin;
-  if( inlen > 0 )
-  {
-    size_t left = S->buflen;
-    size_t fill = BLAKE2B_BLOCKBYTES - left;
-    memcpy( S->buf + S->buflen, in, inlen );
-    S->buflen += inlen;
-  }
-  return 0;
-}
-
 __device__ int blake2b_update_cu( blake2b_state *S, const void *pin, size_t inlen )
 {
   const unsigned char * in = (const unsigned char *)pin;
-  if( inlen > 0 )
-  {
-    size_t left = S->buflen;
-    size_t fill = BLAKE2B_BLOCKBYTES - left;
-    if( inlen > fill )
+  //if( inlen > 0 )
+  //{
+    //size_t left = S->buflen;
+    //size_t fill = BLAKE2B_BLOCKBYTES; // - left;
+    if( inlen > BLAKE2B_BLOCKBYTES )
     {
       S->buflen = 0;
-      memcpy( S->buf + left, in, fill ); /* Fill buffer */
+      memcpy( S->buf /*+ left*/, in, BLAKE2B_BLOCKBYTES ); /* Fill buffer */
       blake2b_increment_counter_cu( S, BLAKE2B_BLOCKBYTES );
       blake2b_compress_cu( S, S->buf ); /* Compress */
-      in += fill; inlen -= fill;
-      while(inlen > BLAKE2B_BLOCKBYTES) {
+      in += BLAKE2B_BLOCKBYTES; inlen -= BLAKE2B_BLOCKBYTES;
+      #pragma unroll
+      for(unsigned i = 0; inlen > BLAKE2B_BLOCKBYTES && i < 2; ++i) {
+      //while(inlen > BLAKE2B_BLOCKBYTES) {
         blake2b_increment_counter_cu(S, BLAKE2B_BLOCKBYTES);
         blake2b_compress_cu( S, in );
         in += BLAKE2B_BLOCKBYTES;
@@ -213,7 +197,7 @@ __device__ int blake2b_update_cu( blake2b_state *S, const void *pin, size_t inle
     }
     memcpy( S->buf + S->buflen, in, inlen );
     S->buflen += inlen;
-  }
+  //}
   return 0;
 }
 
@@ -233,11 +217,12 @@ __device__ __forceinline__ void blake2b_set_lastblock_cu( blake2b_state *S )
 
 __device__ int blake2b_final_cu( blake2b_state *S, void *out, size_t outlen )
 {
-  blake2b_increment_counter_cu( S, S->buflen );
+  const size_t buflen = S->buflen;
+  blake2b_increment_counter_cu( S, buflen );
   blake2b_set_lastblock_cu( S );
-  memset( S->buf + S->buflen, 0, BLAKE2B_BLOCKBYTES - S->buflen ); /* Padding */
+  memset( S->buf + S->buflen, 0, BLAKE2B_BLOCKBYTES - buflen ); /* Padding */
   blake2b_compress_cu( S, S->buf );
 
-  memcpy( out, &S->h[0], S->outlen );
+  memcpy( out, &S->h[0], BLAKE2B_OUTBYTES );
   return 0;
 }

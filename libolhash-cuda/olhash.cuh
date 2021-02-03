@@ -11,8 +11,8 @@ DEV_INLINE uint64_t cosine_distance(uint8_t soln[BLAKE2B_OUTBYTES]) {
   for( unsigned i = 0; i < BLAKE2B_OUTBYTES/32; ++i ) {
     num = 0.; den = 0.; norm_w = 0.; norm_s = 0.;
     for( unsigned j = 0; j < 32; ++j ) {
-      unsigned w = d_work[32 * (1 - i) + j];
-      unsigned s = soln[32 * i + j];
+      const unsigned w = d_work[32 * (1 - i) + j];
+      const unsigned s = soln[32 * i + j];
       num += w * s;
       norm_w += w * w;
       norm_s += s * s;
