@@ -39,12 +39,20 @@ void set_common_data(const std::vector<uint8_t>& _work,
 {
   const uint64_t miner_key_size = _miner_key.size();
   const uint64_t timestamp_size = _timestamp.size();
+  const uint64_t nonce_offset = miner_key_size + 64;
+  const uint64_t hash_template_length = nonce_offset + 64 + timestamp_size;
+
+  unsigned char hash_template[4*64];
+  memset(hash_template, 0, 4*64);
+  memcpy(hash_template, _miner_key.data(), miner_key_size);
+  memcpy(hash_template + miner_key_size, _merkle_root.data(), 64);
+  memcpy(hash_template + miner_key_size + 2*64, _timestamp.data(), timestamp_size);
+  
   CUDA_SAFE_CALL(cudaMemcpyToSymbol(d_work, _work.data(), 64));
-  CUDA_SAFE_CALL(cudaMemcpyToSymbol(d_miner_key, _miner_key.data(), _miner_key.size()));
-  CUDA_SAFE_CALL(cudaMemcpyToSymbol(d_miner_key_length, &miner_key_size, sizeof(uint64_t)));
-  CUDA_SAFE_CALL(cudaMemcpyToSymbol(d_merkle_root, _merkle_root.data(), 64));
-  CUDA_SAFE_CALL(cudaMemcpyToSymbol(d_timestamp, _timestamp.data(), 64));
-  CUDA_SAFE_CALL(cudaMemcpyToSymbol(d_timestamp_length, &timestamp_size, sizeof(uint64_t)));
+  CUDA_SAFE_CALL(cudaMemcpyToSymbol(d_hash_template, hash_template, 4*64));
+
+  CUDA_SAFE_CALL(cudaMemcpyToSymbol(d_nonce_offset, &nonce_offset, sizeof(uint64_t)));
+  CUDA_SAFE_CALL(cudaMemcpyToSymbol(d_hash_template_length, &hash_template_length, sizeof(uint64_t)));
 }
 
 void set_target(uint64_t _target)

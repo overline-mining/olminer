@@ -36,17 +36,10 @@ DEV_INLINE void blake2bl_from_bytes(uint8_t in[BLAKE2B_OUTBYTES],
 DEV_INLINE bool compute_distance(uint64_t nonce, uint64_t* distance) {
   uint8_t hash_string[4*BLAKE2B_OUTBYTES];
   uint8_t work_string[BLAKE2B_OUTBYTES];
-
-  const unsigned nonce_hash_offset = d_miner_key_length + BLAKE2B_OUTBYTES;
-  const unsigned ts_offset = nonce_hash_offset + BLAKE2B_OUTBYTES;
-  const unsigned hash_string_length = ts_offset + d_timestamp_length;
+    
+  // bring in the template for the hash
+  memcpy(hash_string, d_hash_template, d_hash_template_length);
   
-  // bring in the parts of work to the string-to-hash
-  memcpy(hash_string, d_miner_key, d_miner_key_length);
-  memcpy(hash_string + d_miner_key_length, d_merkle_root, BLAKE2B_OUTBYTES);
-  // skip past the area for the nonce hash to place the timestamp string
-  memcpy(hash_string + ts_offset, d_timestamp, d_timestamp_length);
-
   //convert the nonce to a string
   work_string[0] = '0';
   uint8_t length = 0;
@@ -57,8 +50,9 @@ DEV_INLINE bool compute_distance(uint64_t nonce, uint64_t* distance) {
   }
   reduced_nonce = nonce;
   for(uint8_t j = length; j > 1; --j) {
-    work_string[j - 1] = d_num_to_code[reduced_nonce % 10];
-    reduced_nonce /= 10ULL;
+    work_string[j - 1] = reduced_nonce % 10;
+    reduced_nonce = reduced_nonce / 10ULL;
+    work_string[j - 1] = d_num_to_code[work_string[j - 1]];
   }
   work_string[0] = d_num_to_code[reduced_nonce];
   length = (length == 0) + (length > 0) * length;
@@ -72,11 +66,11 @@ DEV_INLINE bool compute_distance(uint64_t nonce, uint64_t* distance) {
 
   // "blake2b" and stringify the nonce hash
   // place directly into string-to-hash
-  blake2bl_from_bytes(work_string, hash_string + nonce_hash_offset);
+  blake2bl_from_bytes(work_string, hash_string + d_nonce_offset);
 
   //reset blake2b state and hash hash_string into work_string
   blake2b_init_cu(&ns, BLAKE2B_OUTBYTES);
-  blake2b_update_cu(&ns, hash_string, hash_string_length);
+  blake2b_update_cu(&ns, hash_string, d_hash_template_length);
   blake2b_final_cu(&ns, work_string, BLAKE2B_OUTBYTES);
 
   //blake2bl the work string
