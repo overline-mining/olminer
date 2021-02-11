@@ -52,7 +52,7 @@ This will only run on linux with the [nvidia container runtimes](https://nvidia.
 Similarly for windows containers you will have provide the gpus to the docker containers. 
 Neither of these are easy things to do (but it is significantly easier in linux).
 
-To start the previously built miner, use ```docker run -d --restart=unless-stopped -e MINER_TYPE=cuda -e STRATUM_URL=stratum://0x6a37b22b7fbbe8cc1f34c86e729905472e342e01@www.waietng-pool.us:3141 --name olminer-cuda olminer```
+To start the previously built miner, use ```docker run -d --gpus all --restart=unless-stopped -e MINER_TYPE=cuda -e STRATUM_URL=stratum://0x6a37b22b7fbbe8cc1f34c86e729905472e342e01@www.waietng-pool.us:3141 --name olminer-cuda olminer```
 
 If don't want to all GPUs available to the miner use something like ```docker run -d --gpus device=0,1 --restart=unless-stopped -e MINER_TYPE=cuda -e STRATUM_URL=stratum://0x6a37b22b7fbbe8cc1f34c86e729905472e342e01@www.waietng-pool.us:3141 --name olminer-cuda olminer```
 
