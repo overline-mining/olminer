@@ -37,8 +37,8 @@
 1. clone this repository
 2. make sure you have [docker](https://docs.docker.com/get-docker/) installed
 3. build
-    * if you are on linux follow the instructions in `docker.olminer/README`
-    * if you are on windows that docker file is on the way :-)
+    * if you are on linux or windows follow the instructions in `docker.olminer/README`
+    * NB: "ubuntu" or "debian" is a distribution, "linux" and "windows" are operating systems.
 4. copy the executable out of the docker container
     * `docker create -ti --name dummy olminer bash && sudo docker cp dummy:/home/bc/olminer /usr/local/bin ; docker rm -f dummy`
 5. If you want to mine with a GPU make sure you have [CUDA 11](https://docs.nvidia.com/deploy/cuda-compatibility/index.html#support-hardware) compatible drivers installed.
