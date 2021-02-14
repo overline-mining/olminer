@@ -37,11 +37,9 @@
 1. clone this repository
 2. make sure you have [docker](https://docs.docker.com/get-docker/) installed
 3. build
-    * if you are on linux or windows follow the instructions in `docker.olminer/README`
+    * if you are on linux or windows follow the instructions in [docker.olminer/README](https://github.com/overline-mining/olminer/blob/master/docker.olminer/README.md)
     * NB: "ubuntu" or "debian" is a distribution, "linux" and "windows" are operating systems.
-4. copy the executable out of the docker container
-    * `docker create -ti --name dummy olminer bash && sudo docker cp dummy:/home/bc/olminer /usr/local/bin ; docker rm -f dummy`
-5. If you want to mine with a GPU make sure you have [CUDA 11](https://docs.nvidia.com/deploy/cuda-compatibility/index.html#support-hardware) compatible drivers installed.
+4. If you want to mine with a GPU make sure you have [CUDA 11](https://docs.nvidia.com/deploy/cuda-compatibility/index.html#support-hardware) compatible drivers installed.
 
 Note for 3060-3090 users: you need to change the build and base images in the Dockerfile to start with `nvidia/cuda:11.1.1` instead of `nvidia/cuda:11.0` and your drivers must be compatible with CUDA 11.1.
 
