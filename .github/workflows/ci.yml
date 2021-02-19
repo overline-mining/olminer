@@ -52,7 +52,7 @@ jobs:
 
   build-windows-cuda9:
     runs-on: windows-latest
-    name: build olminer (windows-latest)
+    name: build olminer (windows-latest / cuda 9)
 
     steps:
     - uses: actions/checkout@master
