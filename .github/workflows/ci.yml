@@ -51,8 +51,8 @@ jobs:
         path: build/olminer.*
 
   build-windows-cuda9:
-    runs-on: windows-latest
-    name: build olminer (windows-latest / cuda 9)
+    runs-on: windows-2016
+    name: build olminer (windows-2016 / cuda 10)
 
     steps:
     - uses: actions/checkout@master
@@ -62,8 +62,8 @@ jobs:
       uses: lukka/get-cmake@v3.19.2
     - name: install cuda
       env:
-        cuda: "9.2.148"
-        visual_studio: "Visual Studio 16 2015"
+        cuda: "10.0.130"
+        visual_studio: "Visual Studio 15 2017"
       run: |
         # Install CUDA via a powershell script
           .\scripts\actions\install_cuda_windows.ps1
