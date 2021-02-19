@@ -50,6 +50,45 @@ jobs:
         retention-days: 5
         path: build/olminer.*
 
+  build-windows-cuda9:
+    runs-on: windows-latest
+    name: build olminer (windows-latest)
+
+    steps:
+    - uses: actions/checkout@master
+      with:
+        submodules: True
+    - name: get cmake 3.19.2
+      uses: lukka/get-cmake@v3.19.2
+    - name: install cuda
+      env:
+        cuda: "9.2.148"
+        visual_studio: "Visual Studio 16 2019"
+      run: |
+        # Install CUDA via a powershell script
+          .\scripts\actions\install_cuda_windows.ps1
+          if ($?) {
+            # Set paths for subsequent steps, using $env:CUDA_PATH
+            echo "Adding CUDA to CUDA_PATH, CUDA_PATH_X_Y and PATH"
+            echo "CUDA_PATH=$env:CUDA_PATH" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+            echo "$env:CUDA_PATH_VX_Y=$env:CUDA_PATH" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+            echo "$env:CUDA_PATH/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          }
+      shell: powershell
+    - name: build olminer
+      run: |        
+        mkdir -p build
+        pushd build
+        cmake -DOLHASHCUDA=ON ..
+        cmake --build . --config Release --target package
+        popd
+    - name: export artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: olminer-executables-windows-latest
+        retention-days: 5
+        path: build/olminer.*
+
   build-windows:
     runs-on: windows-latest
     name: build olminer (windows-latest)
