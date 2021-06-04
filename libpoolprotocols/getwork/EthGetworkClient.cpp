@@ -419,13 +419,41 @@ void EthGetworkClient::processResponse(Json::Value& JRes)
             }
             else
             {
-                Json::Value JPrm = JRes.get("result", Json::Value::null);
+                Json::Value jPrm = JRes.get("result", Json::Value::null);
                 WorkPackage newWp;
-                
+
+                string sHeaderHash = jPrm.get(Json::Value::ArrayIndex(0), "").asString();
+                string sSeedHash = jPrm.get(Json::Value::ArrayIndex(1), "").asString();
+                string sShareTarget =
+                    jPrm.get(Json::Value::ArrayIndex(2), "").asString();
+                string sHeight = jPrm.get(Json::Value::ArrayIndex(3), "").asString();
+                string sMinerKey = jPrm.get(Json::Value::ArrayIndex(4), "").asString();
+                string sWorkId = jPrm.get(Json::Value::ArrayIndex(5), "").asString();
+                string sTimestamp = jPrm.get(Json::Value::ArrayIndex(6), "").asString();
+
+                /*
                 newWp.header = h256(JPrm.get(Json::Value::ArrayIndex(0), "").asString());
                 newWp.seed = h256(JPrm.get(Json::Value::ArrayIndex(1), "").asString());
                 newWp.boundary = h256(JPrm.get(Json::Value::ArrayIndex(2), "").asString());
+                */
+
+                std::string sShareTarget_orig = sShareTarget;
+                  int l = sShareTarget.length();
+                  if (l < 66)
+                      sShareTarget = "0x" + string(66 - l, '0') + sShareTarget.substr(2);
+                newWp.seed = h256(sSeedHash);
+                newWp.header = h256(sHeaderHash);
+                newWp.boundary = h256(sShareTarget);
+                newWp.difficulty = std::stoull(sShareTarget_orig);
+                newWp.merkle_root = bytes(sSeedHash.begin(), sSeedHash.end());
+                newWp.work = bytes(sHeaderHash.begin(), sHeaderHash.end());
+                newWp.miner_key = bytes(sMinerKey.begin(), sMinerKey.end());
+                newWp.timestamp = std::stoull(sTimestamp);
+                newWp.work_id = sWorkId;
                 newWp.job = newWp.header.hex();
+                
+
+                
                 if (m_current.header != newWp.header)
                 {
                     m_current = newWp;
@@ -552,9 +580,12 @@ void EthGetworkClient::submitSolution(const Solution& solution)
         m_solution_submitted_max_id = max(m_solution_submitted_max_id, id);
         jReq["method"] = "eth_submitWork";
         jReq["params"] = Json::Value(Json::arrayValue);
-        jReq["params"].append("0x" + nonceHex);
-        jReq["params"].append("0x" + solution.work.header.hex());
-        jReq["params"].append("0x" + solution.mixHash.hex());
+        jReq["params"].append(std::to_string(solution.nonce));
+        jReq["params"].append(std::to_string(solution.distance));
+        jReq["params"].append(std::to_string(solution.timestamp));
+        jReq["params"].append(solution.work.work_id);
+        if (!m_conn->Workername().empty())
+            jReq["worker"] = m_conn->Workername();
         send(jReq);
     }
 
