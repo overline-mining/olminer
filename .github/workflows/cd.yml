@@ -10,8 +10,8 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, ubuntu-18.04]
-    runs-on: ${{matrix.os}}
-    name: deploy olminer (${{matrix.os}})
+    runs-on: ${{ matrix.os }}
+    name: deploy olminer (${{ matrix.os }})
 
     steps:
     - uses: actions/checkout@master
@@ -37,14 +37,14 @@ jobs:
         pushd build
         cmake -DOLHASHCUDA=ON ..
         cmake --build . --config Release --target package
-        cp olminer/olminer ../
         popd
     - name: deploy to release
-      uses: actions/upload-artifact@v2
+      uses: svenstaro/upload-release-action@v2
       with:
-        name: olminer-executables-ubuntu-latest
-        retention-days: 5
-        path: build/olminer.*
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: build/olminer*
+        file_glob: true
+        tag: ${{ github.ref }}-${{ matrix.os }}
 
   build-windows:
     runs-on: windows-latest
@@ -79,9 +79,9 @@ jobs:
         cmake --build . --config Release --target package
         popd
     - name: deploy to release
-      uses: actions/upload-artifact@v2
+      uses: svenstaro/upload-release-action@v2
       with:
-        name: olminer-executables-windows-latest
-        retention-days: 5
-        path: build/olminer.*
-  
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: build/olminer*
+        file_glob: true
+        tag: ${{ github.ref }}-windows
