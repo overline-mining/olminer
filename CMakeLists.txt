@@ -103,6 +103,7 @@ add_subdirectory(libdevcore)
 add_subdirectory(libethcore)
 add_subdirectory(libhwmon)
 add_subdirectory(libpoolprotocols)
+add_subdirectory(hive)
 
 if (ETHASHCL)
     add_subdirectory(libethash-cl)

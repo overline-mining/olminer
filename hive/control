@@ -1,0 +1,6 @@
+Package: hive-miners-olminer
+Version: 0.20-0
+Priority: optional
+Architecture: all
+Maintainer: none <none@none.none>
+Description: Hive miner - olminer (OverLine miner)
