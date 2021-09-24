@@ -13,8 +13,11 @@ on:
 
 jobs:
   build-linux:
-    runs-on: ubuntu-latest
-    name: build olminer (ubuntu-latest)
+    strategy:
+      matrix:
+        os: [ubuntu-latest, ubuntu-18.04]
+    runs-on: ${{matrix.os}}
+    name: build olminer (${{matrix.os}})
 
     steps:
     - uses: actions/checkout@master
