@@ -6,9 +6,12 @@ on:
       - v*.*.*
 
 jobs:
-  deploy-linux:
-    runs-on: ubuntu-latest
-    name: deploy olminer (ubuntu-latest)
+  build-linux:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, ubuntu-18.04]
+    runs-on: ${{matrix.os}}
+    name: deploy olminer (${{matrix.os}})
 
     steps:
     - uses: actions/checkout@master
@@ -36,17 +39,16 @@ jobs:
         cmake --build . --config Release --target package
         cp olminer/olminer ../
         popd
-    - name: relea
-    - name: export artifacts
+    - name: deploy to release
       uses: actions/upload-artifact@v2
       with:
         name: olminer-executables-ubuntu-latest
         retention-days: 5
         path: build/olminer.*
 
-  deploy-windows:
+  build-windows:
     runs-on: windows-latest
-    name: build olminer (windows-latest)
+    name: deploy olminer (windows-latest)
 
     steps:
     - uses: actions/checkout@master
@@ -76,7 +78,7 @@ jobs:
         cmake -DOLHASHCUDA=ON ..
         cmake --build . --config Release --target package
         popd
-    - name: export artifacts
+    - name: deploy to release
       uses: actions/upload-artifact@v2
       with:
         name: olminer-executables-windows-latest
