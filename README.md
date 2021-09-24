@@ -164,6 +164,28 @@ Error: Insufficient CUDA driver: 9010
 
 You have to upgrade your Nvidia drivers. On Linux, install `nvidia-396` package or newer.
 
+### Installing on HiveOS
+1. Add a new wallet:
+Coin : OVL
+Address: Your Overline wallet address.
+Name : olminer
+
+2. Create a new miner in your flightsheet:
+Coin: OVL
+Wallet: olminer
+Pool: Configure in miner
+Miner: Custom
+
+3. Setup custom miner:
+Name: olminer
+Installation URL: https://github.com/overline-mining/olminer/releases/download/v0.20.0-ubuntu-18.04/olminer.tar.gz
+Hash Algorithm : you can leave this blank
+Wallet and worker template: %WAL%.%WORKER_NAME%
+Pool URL: stratum1+ssl://%WAL%.%WORKER_NAME%@ENTER_YOUR_POOL_HERE:ENTER_PORT_HERE
+Pass: %WAL%.%WORKER_NAME%
+(Note pool url and pass may require a different setup, please check with your pool)
+
+Apply changes, and upload flightsheet to your workers!
 
 [Amazon S3 is needed]: https://docs.travis-ci.com/user/uploading-artifacts/
 [Contributors statistics since 2015-08-20]: https://github.com/overline-mining/olminer/graphs/contributors?from=2015-08-20
