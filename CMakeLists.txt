@@ -20,7 +20,7 @@ HunterGate(
 )
 
 project(olminer)
-set(PROJECT_VERSION 0.20.0-rc.0)
+set(PROJECT_VERSION 0.20.0)
 
 cable_set_build_type(DEFAULT Release CONFIGURATION_TYPES Release RelWithDebInfo)
 
@@ -122,7 +122,6 @@ endif()
 
 add_subdirectory(olminer)
 
-
 if(WIN32)
     set(CPACK_GENERATOR ZIP)
 else()
@@ -131,4 +130,6 @@ endif()
 set(CPACK_PACKAGE_FILE_NAME ${PROJECT_NAME})
 set(CPACK_PACKAGE_CHECKSUM SHA256)
 set(CPACK_INCLUDE_TOPLEVEL_DIRECTORY FALSE)
+set(CPACK_COMPONENT_INCLUDE_TOPLEVEL_DIRECTORY FALSE)
 include(CPack)
+

@@ -2,22 +2,16 @@ name: CI/CD
 
 on:
   push:
-    branches:
-      - master
-  pull_request:
-    branches:
-      - master
-  # Run daily at 0:01 UTC
-  schedule:
-    - cron:  '1 0 * * *'
+    tags:
+      - v*.*.*
 
 jobs:
   build-linux:
     strategy:
       matrix:
         os: [ubuntu-latest, ubuntu-18.04]
-    runs-on: ${{matrix.os}}
-    name: build olminer (${{matrix.os}})
+    runs-on: ${{ matrix.os }}
+    name: deploy olminer (${{ matrix.os }})
 
     steps:
     - uses: actions/checkout@master
@@ -44,16 +38,17 @@ jobs:
         cmake -DOLHASHCUDA=ON ..
         cmake --build . --config Release --target package
         popd
-    - name: export artifacts
-      uses: actions/upload-artifact@v2
+    - name: deploy to release
+      uses: svenstaro/upload-release-action@v2
       with:
-        name: olminer-executables-${{ matrix.os }}
-        retention-days: 5
-        path: build/olminer.*
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: build/olminer*
+        file_glob: true
+        tag: ${{ github.ref }}-${{ matrix.os }}
 
   build-windows:
     runs-on: windows-latest
-    name: build olminer (windows-latest)
+    name: deploy olminer (windows-latest)
 
     steps:
     - uses: actions/checkout@master
@@ -83,10 +78,10 @@ jobs:
         cmake -DOLHASHCUDA=ON ..
         cmake --build . --config Release --target package
         popd
-    - name: export artifacts
-      uses: actions/upload-artifact@v2
+    - name: deploy to release
+      uses: svenstaro/upload-release-action@v2
       with:
-        name: olminer-executables-windows-latest
-        retention-days: 5
-        path: build/olminer.*
-  
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: build/olminer*
+        file_glob: true
+        tag: ${{ github.ref }}-windows

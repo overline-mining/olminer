@@ -33,6 +33,7 @@ endif()
 
 include(GNUInstallDirs)
 install(TARGETS olminer DESTINATION ${CMAKE_INSTALL_BINDIR})
+install(SCRIPT "${CMAKE_SOURCE_DIR}/cmake/flatten.cmake")
 if(MSVC)
     install(FILES $<TARGET_PDB_FILE:olminer> DESTINATION ${CMAKE_INSTALL_BINDIR} OPTIONAL)
 endif()
