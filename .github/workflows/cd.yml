@@ -2,19 +2,13 @@ name: CI/CD
 
 on:
   push:
-    branches:
-      - master
-  pull_request:
-    branches:
-      - master
-  # Run daily at 0:01 UTC
-  schedule:
-    - cron:  '1 0 * * *'
+    tags:
+      - v*.*.*
 
 jobs:
-  build-linux:
+  deploy-linux:
     runs-on: ubuntu-latest
-    name: build olminer (ubuntu-latest)
+    name: deploy olminer (ubuntu-latest)
 
     steps:
     - uses: actions/checkout@master
@@ -42,6 +36,7 @@ jobs:
         cmake --build . --config Release --target package
         cp olminer/olminer ../
         popd
+    - name: relea
     - name: export artifacts
       uses: actions/upload-artifact@v2
       with:
@@ -49,7 +44,7 @@ jobs:
         retention-days: 5
         path: build/olminer.*
 
-  build-windows:
+  deploy-windows:
     runs-on: windows-latest
     name: build olminer (windows-latest)
 
